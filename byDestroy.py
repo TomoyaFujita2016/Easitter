@@ -3,8 +3,6 @@ import datetime
 from datetime import timedelta
 import tweepy
 
-api = tas.tweetSetup()
-
 def getFriendsIds(api):
     my_info = api.me()
     friends_ids = []
@@ -46,38 +44,3 @@ def byOldMan(api, friend_id):
     except tweepy.error.TweepError:
         print ("ERROR: GET NEWEST TWEET FROM: " + str(friend_id))
         return False
-def byDestroyFriendShip(api, friends_Ids, followers_Ids):
-    
-    #Whether it is being followed or not
-    for friend_id in friends_Ids:
-        cnt = 0
-        for follower_id in followers_Ids:
-            if friend_id==follower_id:
-                break
-            cnt += 1
-        if cnt == len(followers_Ids):
-            byNotBeingFollowed = True
-        else:
-            byNotBeingFollowed = False
-        print ("NOTBEINGFOLLOWED: "+ str(byNotBeingFollowed))
-
-    #Newest Tweet Date > 4weeks ago
-    limDate = datetime.datetime.today() - timedelta(days=28)
-    for friend_id in friends_Ids:
-        userdata = api.get_user(id=friend_id)
-        try:
-            newestTweet = api.user_timeline(id=friend_id)[0]
-            if newestTweet.created_at < limDate:
-                byOldMan = True
-            else:
-                byOldMan = False
-        except IndexError:
-            byOldMan = True
-        except tweepy.error.TweepError:
-            print ("ERROR: GET NEWEST TWEET FROM: " + str(friend_id))
-        print ("byOldMan: " + str(byOldMan))
-
-getFollowersIds(api)
-for friend in getFriendsIds(api):
-    #byOldMan(api, friend)
-    print(str(byNotBeingFollowed(api, friend, getFollowersIds(api))))
