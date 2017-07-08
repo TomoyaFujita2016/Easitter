@@ -17,7 +17,6 @@ def getFollowersIds(api):
     followers_ids = []
     for follower_id in tweepy.Cursor(api.followers_ids, usr_id=my_info.id).items():
         followers_ids.append(follower_id)
-        print("HELLO")
     return followers_ids
 
 def byNotBeingFollowed(api, friend_id, followers_Ids):
