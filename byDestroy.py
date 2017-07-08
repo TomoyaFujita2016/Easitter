@@ -3,10 +3,9 @@ import datetime
 from datetime import timedelta
 import tweepy
 
-def getFriendsIds(api):
-    my_info = api.me()
+def getFriendsIds(api, userId):
     friends_ids = []
-    for friend_id in tweepy.Cursor(api.friends_ids, usr_id=my_info.id).items():
+    for friend_id in tweepy.Cursor(api.friends_ids, usr_id=userId).items():
         friends_ids.append(friend_id)
     return friends_ids
 
