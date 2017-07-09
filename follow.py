@@ -7,7 +7,7 @@ me = api.me()
 args = sys.argv
 FollowCnt = 0
 FollowCntFromFriend= 0
-tags = ["a","jk","機械学習", "Androidアプリ", "Androidゲームアプリ", "ベンチャー", "強化学習", "ゲームアプリ開発","AndroidStudio", "AndroidApp", "AndroidDeveloper", "個人開発", "DeepLearning"]
+tags = ["a","機械学習", "Androidアプリ", "Androidゲームアプリ", "ベンチャー", "強化学習", "ゲームアプリ開発","AndroidStudio", "AndroidApp", "AndroidDeveloper", "個人開発", "DeepLearning"]
 while True:
     try:
         for tag in tags:
@@ -20,7 +20,6 @@ while True:
                     print("ERROR: FAILED TO FOLLOW "+ tweet.user.name)
     
         MyFriends = byD.getFriendsIds(api, me.id)
-    
         for myFriend in MyFriends:
             friends = byD.getFriendsIds(api, myFriend)
             for friend in friends:
