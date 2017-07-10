@@ -1,3 +1,13 @@
+def byAlreadyFriend(api, friend_id, friends_ids):
+    cnt = 0
+    for friendID in friends_ids:
+        if friend_id == friendID:
+            break
+        cnt += 1
+    if cnt == len(friends_ids):
+        return False
+    else:
+        return True
 
 def byFFRatio(api, friend_id, lowerFFRatio):
     user = api.get_user(friend_id)
@@ -11,26 +21,29 @@ def byFFRatio(api, friend_id, lowerFFRatio):
 def byBot(api, friend_id):
     user = api.get_user(friend_id)
     name = user.name
-    return ('bot' in name) or ('Bot' in name) or ('BOT' in name)
+    return ('まとめ' in name) or  ('bot' in name) or ('Bot' in name) or ('BOT' in name)
 
-def byCrazyHashTag(api, friend_id, upperHashRatio):
+def byCrazyHashTagUrl(api, friend_id, upperHashUrlRatio):
     import tweepy
-    amountOfTweet = 80
+    amountOfTweet = 25
     hashCount = 0
+    urlCount = 0
     try:
         for tweet in tweepy.Cursor(api.user_timeline, id=friend_id).items(amountOfTweet):
             if('#' in tweet.text):
                 hashCount += 1
+            if(('/' in tweet.text) or ('com' in tweet.text) or ('jp' in tweet.text)):
+                urlCount += 1
     except tweepy.error.TweepError:
         user = api.get_user(friend_id)
         print("ERROR: FAILED TO GET TWEET FROM" + user.name)
         return True
 
     hashRatio = hashCount / amountOfTweet
-    if(upperHashRatio < hashRatio):
-        return True
-
-    return False
+    urlRatio = urlCount / amountOfTweet
+    if(upperHashUrlRatio > hashRatio and upperHashUrlRatio > urlCount):
+        return False
+    return True
 
 def byOldMan(api, friend_id):
     import datetime
