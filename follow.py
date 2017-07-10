@@ -9,7 +9,7 @@ MyFriends = byD.getFriendsIds(api, me.id)
 args = sys.argv
 FollowCnt = 0
 FollowCntFromFriend= 0
-
+#tags = ["野球部", "LDK", "部活", "女テニ", "男バス", "陸上", "男子陸上", "高校生活", "グラセフ", "BF1", "BF4"]
 tags = ["機械学習", "Androidアプリ", "Androidゲームアプリ", "ベンチャー", "強化学習", "ゲームアプリ開発","AndroidStudio", "AndroidApp", "AndroidDeveloper", "個人開発", "DeepLearning"]
 
 def byFollow(api, friend_id, lowerFFRatio, upperHashRatio, lowerTPDRatio, MyFriends):
@@ -29,7 +29,7 @@ def byFollow(api, friend_id, lowerFFRatio, upperHashRatio, lowerTPDRatio, MyFrie
     if(byG.byOldMan(api, friend_id)):
         print("[ " + user.name + " ] is a old user!")
         return False
-    return True       
+    return True
 FollowCnt = 0
 FollowCntFromFriend = 0
 FollowLimit = 30
@@ -38,9 +38,9 @@ while True:
     print("Start Following!")
     try:
         for tag in tags:
-            for tweet in api.search(q=tag ,count=5):
+            for tweet in api.search(q=tag ,count=1):
                 try:
-                    if(byFollow(api, tweet.user.id, 1.0, 0.25, 0.5, MyFriends)):
+                    if(byFollow(api, tweet.user.id, 0.75, 0.5, 0.25, MyFriends)):
                         api.create_friendship(tweet.user.id, True)
                         print("Successed in following " + tweet.user.name)
                         FollowCnt += 1
@@ -50,13 +50,14 @@ while True:
                             raise Exception
                 except tweepy.error.TweepError:
                     print("ERROR: FAILED TO FOLLOW "+ tweet.user.name)
+        print("ENDED TAG SEARCH!!!")
         MyFriends = byD.getFriendsIds(api, me.id)
         for myFriend in MyFriends:
             friends = byD.getFriendsIds(api, myFriend)
             for friend in friends:
                 try:
                     name = api.get_user(friend)
-                    if(byFollow(api, friend, 1.0, 0.25, 0.5, MyFriends)):
+                    if(byFollow(api, friend, 0.75, 0.5, 0.25, MyFriends)):
                         api.create_friendship(friend, True)
                         FollowCntFromFriend += 1
                         MyFriends.append(friend)
@@ -69,3 +70,4 @@ while True:
     except (Exception, KeyboardInterrupt):
         print ("\nCnt: "+ str(FollowCnt)+ "\nCntFromFriend: "+str(FollowCntFromFriend)+"\nTotal: "+str(FollowCnt+FollowCntFromFriend))
         break
+    print("ENDED 1 EPOC!!!")

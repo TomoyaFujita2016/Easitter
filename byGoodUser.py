@@ -32,7 +32,7 @@ def byCrazyHashTagUrl(api, friend_id, upperHashUrlRatio):
         for tweet in tweepy.Cursor(api.user_timeline, id=friend_id).items(amountOfTweet):
             if('#' in tweet.text):
                 hashCount += 1
-            if(('/' in tweet.text) or ('com' in tweet.text) or ('jp' in tweet.text)):
+            if(('co' in tweet.text) or ('jp' in tweet.text) or ('/' in tweet.text)):
                 urlCount += 1
     except tweepy.error.TweepError:
         user = api.get_user(friend_id)
@@ -41,9 +41,12 @@ def byCrazyHashTagUrl(api, friend_id, upperHashUrlRatio):
 
     hashRatio = hashCount / amountOfTweet
     urlRatio = urlCount / amountOfTweet
-    if(upperHashUrlRatio > hashRatio and upperHashUrlRatio > urlCount):
+    if (upperHashUrlRatio < hashRatio):
+        return True
+    if (upperHashUrlRatio < urlRatio):
+        return True
+    else:
         return False
-    return True
 
 def byOldMan(api, friend_id):
     import datetime
