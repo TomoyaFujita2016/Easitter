@@ -9,7 +9,6 @@ MyFriends = byD.getFriendsIds(api, me.id)
 args = sys.argv
 FollowCnt = 0
 FollowCntFromFriend= 0
-#tags = ["野球部", "LDK", "部活", "女テニ", "男バス", "陸上", "男子陸上", "高校生活", "グラセフ", "BF1", "BF4"]
 tags = ["機械学習", "Androidアプリ", "Androidゲームアプリ", "ベンチャー", "強化学習", "ゲームアプリ開発","AndroidStudio", "AndroidApp", "AndroidDeveloper", "個人開発", "DeepLearning"]
 
 def byFollow(api, friend_id, lowerFFRatio, upperHashRatio, lowerTPDRatio, MyFriends):
