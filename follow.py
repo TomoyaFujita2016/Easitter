@@ -7,10 +7,10 @@ api = tas.tweetSetup()
 me = api.me()
 MyFriends = byD.getFriendsIds(api, me.id)
 args = sys.argv
+byLimit = False
 FollowCnt = 0
 FollowCntFromFriend= 0
-#tags = ["野球部", "LDK", "部活", "女テニ", "男バス", "陸上", "男子陸上", "高校生活", "グラセフ", "BF1", "BF4"]
-tags = ["機械学習", "Androidアプリ", "Androidゲームアプリ", "ベンチャー", "強化学習", "ゲームアプリ開発","AndroidStudio", "AndroidApp", "AndroidDeveloper", "個人開発", "DeepLearning"]
+tags = ["絵かき","絵", "機械学習", "アプリ", "ゲーム", "ベンチャー", "強化学習", "アプリ開発","Android", "個人","院生", "帰宅", "個人開発", "DeepLearning", "学習結果"]
 
 def byFollow(api, friend_id, lowerFFRatio, upperHashRatio, lowerTPDRatio, MyFriends):
     user = api.get_user(friend_id)
@@ -32,13 +32,13 @@ def byFollow(api, friend_id, lowerFFRatio, upperHashRatio, lowerTPDRatio, MyFrie
     return True
 FollowCnt = 0
 FollowCntFromFriend = 0
-FollowLimit = 30
+FollowLimit = 10
 
+print("Start Following!")
 while True:
-    print("Start Following!")
     try:
         for tag in tags:
-            for tweet in api.search(q=tag ,count=1):
+            for tweet in api.search(q=tag ,count=4):
                 try:
                     if(byFollow(api, tweet.user.id, 0.75, 0.5, 0.25, MyFriends)):
                         api.create_friendship(tweet.user.id, True)
@@ -47,10 +47,11 @@ while True:
                         MyFriends.append(tweet.user.id)
                         if(FollowLimit <= (FollowCnt + FollowCntFromFriend)):
                             print("FollowLimit")
+                            byLimit = True
                             raise Exception
                 except tweepy.error.TweepError:
                     print("ERROR: FAILED TO FOLLOW "+ tweet.user.name)
-        print("ENDED TAG SEARCH!!!")
+        '''            
         MyFriends = byD.getFriendsIds(api, me.id)
         for myFriend in MyFriends:
             friends = byD.getFriendsIds(api, myFriend)
@@ -67,7 +68,13 @@ while True:
                             raise Exception
                 except tweepy.error.TweepError:
                     print("ERROR: FAILED TO FOLLOW "+ name.name)
-    except (Exception, KeyboardInterrupt):
+        '''
+    except KeyboardInterrupt:
         print ("\nCnt: "+ str(FollowCnt)+ "\nCntFromFriend: "+str(FollowCntFromFriend)+"\nTotal: "+str(FollowCnt+FollowCntFromFriend))
         break
-    print("ENDED 1 EPOC!!!")
+    except Exception:
+        if(byLimit):
+            print ("\nCnt: "+ str(FollowCnt)+ "\nCntFromFriend: "+str(FollowCntFromFriend)+"\nTotal: "+str(FollowCnt+FollowCntFromFriend))
+            break
+        print("EXCEPTION OCCURED!!!")
+
