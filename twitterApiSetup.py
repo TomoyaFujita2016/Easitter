@@ -1,15 +1,18 @@
 import tweepy
 def tweetSetup():
-    CONSUMER_KEY = 'Yf4SVt0IhyEQCPxMz8ShEXDng'
-    CONSUMER_SECRET = '4aH1lnFk8FlEUL3qkZzV7p64qdzRq41OZRaeLTp1aPvoaJbHvg'
+    CONSUMER_KEY = 'DdaLMhxUN4fsPocqGVn2Dhya5'
+    CONSUMER_SECRET = 'InmvzQj3b49SU9vqGyRgocwBrjLHwAuinzUsy0v2pz0JD96kuM'
     auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
     
-    redirect_url = auth.get_authorization_url()
-    print ('Get your verification code from:' + redirect_url)
-    verifier = input("Type the verification code: ").strip()
-    auth.get_access_token(verifier)
-    ACCESS_TOKEN = auth.access_token
-    ACCESS_SECRET = auth.access_token_secret
+    ACCESS_TOKEN = '883630081473617921-4Rob1R0zyGXXtyvP0eZdDmZseM4b2Bi'
+    ACCESS_SECRET = '54LOkp0pjihl9LdlMDhAs4jo9eZOwzwMxVJ5fB9pkFDBN'
+    
+    #redirect_url = auth.get_authorization_url()
+    #print ('Get your verification code from:' + redirect_url)
+    #verifier = input("Type the verification code: ").strip()
+    #auth.get_access_token(verifier)
+    #ACCESS_TOKEN = auth.access_token
+    #ACCESS_SECRET = auth.access_token_secret
     
     
     auth.set_access_token(ACCESS_TOKEN, ACCESS_SECRET)
