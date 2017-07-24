@@ -10,12 +10,8 @@ args = sys.argv
 byLimit = False
 FollowCnt = 0
 FollowCntFromFriend= 0
-<<<<<<< HEAD
-tags = ["絵かき","絵", "機械学習", "アプリ", "ゲーム", "ベンチャー", "強化学習", "アプリ開発","Android", "個人","院生", "帰宅", "個人開発", "DeepLearning", "学習結果"]
-=======
+#tags = ["絵かき","絵", "機械学習", "アプリ", "ゲーム", "ベンチャー", "強化学習", "アプリ開発","Android", "個人","院生", "帰宅", "個人開発", "DeepLearning", "学習結果"]
 tags = ["機械学習", "Androidアプリ", "Androidゲームアプリ", "ベンチャー", "強化学習", "ゲームアプリ開発","AndroidStudio", "AndroidApp", "AndroidDeveloper", "個人開発", "DeepLearning"]
->>>>>>> 5e42828278e803a599c87567913d49a7c90159b6
-
 def byFollow(api, friend_id, lowerFFRatio, upperHashRatio, lowerTPDRatio, MyFriends):
     user = api.get_user(friend_id)
     if(byG.byAlreadyFriend(api, friend_id, MyFriends)):
