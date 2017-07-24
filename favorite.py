@@ -6,8 +6,8 @@ api = tas.tweetSetup()
 favoCnt = 0
 errorCnt = 0
 Cnt = 0
-#tags = ["#いいねした人全員フォローする"]
-tags = ["#全員フォローする"]
+tags = ["#いいねした人全員フォローする"]
+#tags = ["#全員フォローする"]
 print("Let's Favorite !!")
 while True:
     try:
@@ -27,6 +27,8 @@ while True:
                 print("ERROR OCCUERD!!("+str(errorCnt)+")")
                 errorCnt += 1
             if(((Cnt != 0)and(Cnt % 40 == 0)) or (errorCnt >= 10)):
+                if(errorCnt >= 10):
+                    byManyError = True
                 errorCnt = 0
                 print("Zzzzzzzz.....")
                 #901
@@ -34,6 +36,7 @@ while True:
                 byFirst = True
             Cnt += 1
             time.sleep(2 + random.randint(1,3))
+            
             
     except KeyboardInterrupt:
         print("\nFAVO COUNT: "+ str(favoCnt))
