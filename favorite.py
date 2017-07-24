@@ -35,7 +35,11 @@ while True:
                 time.sleep(30)
                 byFirst = True
             Cnt += 1
+            if(byManyError):
+                byManyError = False
+                break
             time.sleep(2 + random.randint(1,3))
+
             
             
     except KeyboardInterrupt:

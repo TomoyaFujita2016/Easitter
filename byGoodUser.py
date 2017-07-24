@@ -79,3 +79,14 @@ def byTweetPerDay(api, friend_id, lowerTPDRatio):
     if(lowerTPDRatio < tweetPerDay):
         return True
     return False
+
+def byFollowed(api, followers_ids, friends_ids, friend_id):
+    for follower_id in followers_ids:
+        if (follower_id == friend_id) and not (byAlreadyFriend(api, friend_id, friends_ids)):
+            return True
+    return False
+
+
+
+
+
