@@ -3,8 +3,10 @@ import twitterApiSetup as tas
 import time
 import random
 api = tas.tweetSetup()
+byManyError = False
 favoCnt = 0
 errorCnt = 0
+manyErrorCnt = 0
 Cnt = 0
 tags = ["#いいねした人全員フォローする"]
 #tags = ["#全員フォローする"]
@@ -14,10 +16,10 @@ while True:
         for tweet in api.search(q=tags, count=100):
             try:
                 api.create_favorite(tweet.id)
-                #tweet.favorite
                 print("Successed in favoritting this tweet !("+str(favoCnt + 1) +") id: "+ str(tweet.id))
                 favoCnt += 1
                 errorCnt = 0
+                manyErrorCnt = 0
 
             except tweepy.error.TweepError as terr:
                 print("ERROR: FAILED TO FAVORITE!("+str(errorCnt)+") name:"+ tweet.user.name + " id:"+str(tweet.id))
@@ -32,12 +34,17 @@ while True:
                 errorCnt = 0
                 print("Zzzzzzzz.....")
                 #901
-                time.sleep(30)
+                time.sleep(901)
                 byFirst = True
             Cnt += 1
             if(byManyError):
                 byManyError = False
+                manyErrorCnt += 1
+                print("ManyError: back to start tweet")
                 break
+            if(manyErrorCnt >= 2):
+                print("TOO MANY ERRORS !!")
+                raise KeyboardInterrupt
             time.sleep(2 + random.randint(1,3))
 
             
