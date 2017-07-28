@@ -10,28 +10,27 @@ def getFriendsIds(api, userId):
     return friends_ids
 
 def getFollowersIds(api):
-    my_info = api.me()
-    followers_ids = []
-    for follower_id in tweepy.Cursor(api.followers_ids, usr_id=my_info.id).items():
-        followers_ids.append(follower_id)
-    return followers_ids
+    try:
+        my_info = api.me()
+        followers_ids = []
+        for follower_id in tweepy.Cursor(api.followers_ids, usr_id=my_info.id).items():
+            followers_ids.append(follower_id)
+        return followers_ids
+    except tweepy.error.TweepError as terr:
+        print("ERROR in getFollowersIds")
 
 def byNotBeingFollowed(api, friend_id, followers_Ids):
     cnt = 0
     for follower_id in followers_Ids:
         if friend_id==follower_id:
-            break
+            return False #IwasFollowed
         cnt += 1
-    if cnt == len(followers_Ids):
-        return True
-    else:
-        return False
-
+    return True #Iwasnt Followed
 def byOldMan(api, friend_id):
 
     limDate = datetime.datetime.today() - timedelta(days=28)
-    userdata = api.get_user(id=friend_id)
     try:
+        userdata = api.get_user(id=friend_id)
         newestTweet = api.user_timeline(id=friend_id)[0]
         if newestTweet.created_at < limDate:
             return True

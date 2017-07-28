@@ -34,7 +34,7 @@ while True:
                 errorCnt = 0
                 print("Zzzzzzzz.....")
                 #901
-                time.sleep(901)
+                time.sleep(1)
                 byFirst = True
             Cnt += 1
             if(byManyError):
@@ -45,7 +45,7 @@ while True:
             if(manyErrorCnt >= 2):
                 print("TOO MANY ERRORS !!")
                 raise KeyboardInterrupt
-            time.sleep(2 + random.randint(1,3))
+            time.sleep(1 + random.randint(0,1))
 
             
             

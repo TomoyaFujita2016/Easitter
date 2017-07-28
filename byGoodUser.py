@@ -10,17 +10,22 @@ def byAlreadyFriend(api, friend_id, friends_ids):
         return True
 
 def byFFRatio(api, friend_id, lowerFFRatio):
-    user = api.get_user(friend_id)
-    friendsCount = user.friends_count
-    followersCount = user.followers_count
-    ffRatio = friendsCount / followersCount
-    if(lowerFFRatio < ffRatio):
-        return True
-    return False
-
+    try:
+        user = api.get_user(friend_id)
+        friendsCount = user.friends_count
+        followersCount = user.followers_count
+        ffRatio = friendsCount / followersCount
+        if(lowerFFRatio < ffRatio):
+            return True
+    except tweepy.error.TweepError as terr:
+        print("ERROR in byFFRatio")
+        return False
 def byBot(api, friend_id):
-    user = api.get_user(friend_id)
-    name = user.name
+    try:
+        user = api.get_user(friend_id)
+        name = user.name
+    except tweepy.error.TweepError as terr:
+        print("ERROR in byBot")
     return ('まとめ' in name) or  ('bot' in name) or ('Bot' in name) or ('BOT' in name)
 
 def byCrazyHashTagUrl(api, friend_id, upperHashUrlRatio):

@@ -13,26 +13,27 @@ FollowCntFromFriend= 0
 #tags = ["絵かき","絵", "機械学習", "アプリ", "ゲーム", "ベンチャー", "強化学習", "アプリ開発","Android", "個人","院生", "帰宅", "個人開発", "DeepLearning", "学習結果"]
 tags = ["機械学習", "Androidアプリ", "Androidゲームアプリ", "ベンチャー", "強化学習", "ゲームアプリ開発","AndroidStudio", "AndroidApp", "AndroidDeveloper", "個人開発", "DeepLearning"]
 def byFollow(api, friend_id, lowerFFRatio, upperHashRatio, lowerTPDRatio, MyFriends):
-    user = api.get_user(friend_id)
+    #user = api.get_user(friend_id)
+    
     if(byG.byAlreadyFriend(api, friend_id, MyFriends)):
-        print("[ " + user.name + " ] is already followed!")
+        print("[ " +str(friend_id) + " ] is already followed!")
         return False
     if(not byG.byFFRatio(api, friend_id, lowerFFRatio)):
-        print("[ " + user.name + " ] is a passive user!")
+        print("[ " + str(friend_id) + " ] is a passive user!")
         return False
     if(byG.byBot(api, friend_id)):
-        print("[ " + user.name + " ] is a bot!")
+        print("[ " + str(friend_id) + " ] is a bot!")
         return False
     if(byG.byCrazyHashTagUrl(api, friend_id, upperHashRatio)):
-        print("[ " + user.name + " ] is a crazy hashtager!")
+        print("[ " + str(friend_id) + " ] is a crazy hashtager!")
         return False
     if(byG.byOldMan(api, friend_id)):
-        print("[ " + user.name + " ] is a old user!")
+        print("[ " + str(friend_id) + " ] is a old user!")
         return False
     return True
 FollowCnt = 0
 FollowCntFromFriend = 0
-FollowLimit = 10
+FollowLimit = 100
 
 print("Start Following!")
 while True:
@@ -49,8 +50,9 @@ while True:
                             print("FollowLimit")
                             byLimit = True
                             raise Exception
-                except tweepy.error.TweepError:
+                except tweepy.error.TweepError as twp:
                     print("ERROR: FAILED TO FOLLOW "+ tweet.user.name)
+                    print(twp)
         '''            
         MyFriends = byD.getFriendsIds(api, me.id)
         for myFriend in MyFriends:
@@ -72,9 +74,9 @@ while True:
     except KeyboardInterrupt:
         print ("\nCnt: "+ str(FollowCnt)+ "\nCntFromFriend: "+str(FollowCntFromFriend)+"\nTotal: "+str(FollowCnt+FollowCntFromFriend))
         break
-    except Exception:
+    except Exception as e:
         if(byLimit):
             print ("\nCnt: "+ str(FollowCnt)+ "\nCntFromFriend: "+str(FollowCntFromFriend)+"\nTotal: "+str(FollowCnt+FollowCntFromFriend))
             break
         print("EXCEPTION OCCURED!!!")
-
+        print(e)
