@@ -1,3 +1,5 @@
+import tweepy
+
 def byAlreadyFriend(api, friend_id, friends_ids):
     cnt = 0
     for friendID in friends_ids:
@@ -26,10 +28,10 @@ def byBot(api, friend_id):
         name = user.name
     except tweepy.error.TweepError as terr:
         print("ERROR in byBot")
+        return True
     return ('まとめ' in name) or  ('bot' in name) or ('Bot' in name) or ('BOT' in name)
 
 def byCrazyHashTagUrl(api, friend_id, upperHashUrlRatio):
-    import tweepy
     amountOfTweet = 25
     hashCount = 0
     urlCount = 0
