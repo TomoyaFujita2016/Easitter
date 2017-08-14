@@ -47,7 +47,7 @@ try:
                     raise KeyboardInterrupt
                 time.sleep(1+ random.randint(2, 4))
         print("Zzzzzzz")
-        time.sleep(901)
+        time.sleep(60)
 except KeyboardInterrupt:
     print("\nFINISH!")
     print("CNT: "+str(FollowCnt))

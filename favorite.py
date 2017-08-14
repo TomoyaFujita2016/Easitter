@@ -28,13 +28,13 @@ while True:
             except Exception:
                 print("ERROR OCCUERD!!("+str(errorCnt)+")")
                 errorCnt += 1
-            if(((Cnt != 0)and(Cnt % 40 == 0)) or (errorCnt >= 10)):
+            if(((Cnt != 0)and(Cnt % 140 == 0)) or (errorCnt >= 10)):
                 if(errorCnt >= 10):
                     byManyError = True
                 errorCnt = 0
                 print("Zzzzzzzz.....")
                 #901
-                time.sleep(1)
+                time.sleep(900)
                 byFirst = True
             Cnt += 1
             if(byManyError):
