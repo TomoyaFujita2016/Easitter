@@ -15,24 +15,25 @@ def byFollow(api, friend_id, lowerFFRatio, upperHashRatio, lowerTPDRatio, MyFrie
     #if(byG.byAlreadyFriend(api, friend_id, MyFriends)):
         #print("[ " + str(friend_id) + " ] is already followed!")
         #return False
-    if(not byG.byFFRatio(api, friend_id, lowerFFRatio)):
-        print("[ " + str(friend_id) + " ] is a passive user!")
-        return False
+    #if(not byG.byFFRatio(api, friend_id, lowerFFRatio)):
+        #print("[ " + str(friend_id) + " ] is a passive user!")
+        #return False
     if(byG.byBot(api, friend_id)):
         print("[ " + str(friend_id) + " ] is a bot!")
         return False
     if(byG.byCrazyHashTagUrl(api, friend_id, upperHashRatio)):
         print("[ " + str(friend_id) + " ] is a crazy hashtager!")
         return False
-    if(byG.byOldMan(api, friend_id)):
-        print("[ " + str(friend_id) + " ] is a old user!")
-        return False
+    #if(byG.byOldMan(api, friend_id)):
+        #print("[ " + str(friend_id) + " ] is a old user!")
+        #return False
     return True
 UnfollowCnt = 0
 print("Started Unfollowing!")
 friends.reverse()
 for friend in friends:
-    if not(not byD.byNotBeingFollowed(api, friend, followers) and byFollow(api, friend, 0.75, 0.5, 0.25, friends)):
+    #if not(not byD.byNotBeingFollowed(api, friend, followers) and byFollow(api, friend, 0.75, 0.5, 0.25, friends)):
+    if not(not byD.byNotBeingFollowed(api, friend, followers)):
         try:
             api.destroy_friendship(friend)
             UnfollowCnt += 1
