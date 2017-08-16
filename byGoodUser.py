@@ -1,3 +1,4 @@
+# coding: utf-8
 import tweepy
 
 def byAlreadyFriend(api, friend_id, friends_ids):

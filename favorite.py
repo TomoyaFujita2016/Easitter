@@ -1,3 +1,4 @@
+#coding: utf-8
 import tweepy
 import twitterApiSetup as tas
 import time

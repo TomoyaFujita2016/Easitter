@@ -1,3 +1,4 @@
+# coding: utf-8
 import byDestroy as byD
 import byGoodUser as byG
 import tweepy

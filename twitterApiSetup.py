@@ -1,8 +1,10 @@
+# coding: utf-8
 import tweepy
 def tweetSetup():
     CONSUMER_KEY = 'DdaLMhxUN4fsPocqGVn2Dhya5'
     CONSUMER_SECRET = 'InmvzQj3b49SU9vqGyRgocwBrjLHwAuinzUsy0v2pz0JD96kuM'
     auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+    
     
     redirect_url = auth.get_authorization_url()
     print ('Get your verification code from:' + redirect_url)

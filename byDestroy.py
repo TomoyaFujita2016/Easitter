@@ -1,3 +1,4 @@
+# coding: utf-8
 import twitterApiSetup as tas
 import datetime
 from datetime import timedelta

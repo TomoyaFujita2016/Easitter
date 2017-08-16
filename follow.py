@@ -1,3 +1,4 @@
+#coding: utf-8
 import byDestroy as byD
 import byGoodUser as byG
 import tweepy
@@ -12,8 +13,8 @@ FollowCnt = 0
 FollowCntFromFriend= 0
 #tags = ["絵かき","絵", "機械学習", "アプリ", "ゲーム", "ベンチャー", "強化学習", "アプリ開発","Android", "個人","院生", "帰宅", "個人開発", "DeepLearning", "学習結果"]
 #tags = ["機械学習", "Androidアプリ", "Androidゲームアプリ", "ベンチャー", "強化学習", "ゲームアプリ開発","AndroidStudio", "AndroidApp", "AndroidDeveloper", "個人開発", "DeepLearning"]
-
-tags = ["消します", "投資", "起業", "トレード", "寝る", "お花", "旅行", "遊び", "ご飯"]
+tags = ["消します"]
+#tags = ["消します", "投資", "起業", "トレード", "寝る", "お花", "旅行", "遊び", "ご飯"]
 
 def byFollow(api, friend_id, lowerFFRatio, upperHashRatio, lowerTPDRatio, MyFriends):
     #user = api.get_user(friend_id)
