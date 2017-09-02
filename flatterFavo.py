@@ -4,7 +4,8 @@ import twitterApiSetup as tas
 import time
 import random
 api = tas.tweetSetup()
-users = [];
+#input own id to users
+users = [883630081473617921];
 byManyError = False
 favoCnt = 0
 errorCnt = 0
@@ -16,6 +17,8 @@ while True:
     try:
         for tweet in api.home_timeline(count=100):
             try:
+                if 350 < favoCnt:
+                    users = []
                 tweetId = tweet.id
                 tweetUser = tweet.user.id
                 if tweetUser not in users:
