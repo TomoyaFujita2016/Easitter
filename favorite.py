@@ -9,6 +9,7 @@ favoCnt = 0
 errorCnt = 0
 manyErrorCnt = 0
 Cnt = 0
+favoList = []
 tags = ["#いいねした人全員フォローする"]
 #tags = ["#全員フォローする"]
 print("Let's Favorite !!")
@@ -16,12 +17,16 @@ while True:
     try:
         for tweet in api.search(q=tags, count=100):
             try:
-                api.create_favorite(tweet.id)
-                print("Successed in favoritting this tweet !("+str(favoCnt + 1) +") id: "+ str(tweet.id))
-                favoCnt += 1
-                errorCnt = 0
-                manyErrorCnt = 0
-
+                tweetId = tweet.id
+                if tweetId not in favoList:
+                    favoList.append(tweetId);
+                    api.create_favorite(tweetId)
+                    print("Successed in favoritting this tweet !("+str(favoCnt + 1) +") id: "+ str(tweetId))
+                    favoCnt += 1
+                    errorCnt = 0
+                    manyErrorCnt = 0
+                else:
+                    print("Already favorite this tweet !("+str(favoCnt + 1) +") id: "+ str(tweetId))
             except tweepy.error.TweepError as terr:
                 print("ERROR: FAILED TO FAVORITE!("+str(errorCnt)+") name:"+ tweet.user.name + " id:"+str(tweet.id))
                 print(terr)
@@ -35,7 +40,7 @@ while True:
                 errorCnt = 0
                 print("Zzzzzzzz.....")
                 #901
-                time.sleep(900)
+                time.sleep(90)
                 byFirst = True
             Cnt += 1
             if(byManyError):
