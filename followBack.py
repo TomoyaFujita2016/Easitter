@@ -46,7 +46,7 @@ try:
                 if(FollowLimit <= FollowCnt):
                     print("FollowLimit!")
                     raise KeyboardInterrupt
-                time.sleep(1+ random.randint(2, 4))
+                time.sleep(1+ random.randint(1, 2))
         print("Zzzzzzz")
         time.sleep(60)
 except KeyboardInterrupt:
