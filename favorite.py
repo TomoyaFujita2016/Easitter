@@ -11,28 +11,36 @@ manyErrorCnt = 0
 Cnt = 0
 favoList = []
 tags = ["#いいねした人全員フォローする"]
-#tags = ["#全員フォローする"]
+exTags = ["."]
+def byExcept(tweet):
+    for tag in exTags:
+        if tag in tweet:
+            print ("EXCEPTED!!!")
+            return True
+    return False
 print("Let's Favorite !!")
 while True:
     try:
         for tweet in api.search(q=tags, count=100):
             try:
                 tweetId = tweet.id
-                if tweetId not in favoList:
-                    favoList.append(tweetId);
-                    api.create_favorite(tweetId)
-                    print("Successed in favoritting this tweet !("+str(favoCnt + 1) +") id: "+ str(tweetId))
-                    favoCnt += 1
-                    errorCnt = 0
-                    manyErrorCnt = 0
-                else:
-                    print("Already favorite this tweet !("+str(favoCnt + 1) +") id: "+ str(tweetId))
+                if not byExcept(tweet.text):
+                    if tweetId not in favoList:
+                        favoList.append(tweetId);
+                        api.create_favorite(tweetId)
+                        print("Successed in favoritting this tweet !("+str(favoCnt + 1) +") id: "+ str(tweetId))
+                        favoCnt += 1
+                        errorCnt = 0
+                        manyErrorCnt = 0
+                    else:
+                        print("Already favorite this tweet !("+str(favoCnt + 1) +") id: "+ str(tweetId))
             except tweepy.error.TweepError as terr:
                 print("ERROR: FAILED TO FAVORITE!("+str(errorCnt)+") name:"+ tweet.user.name + " id:"+str(tweet.id))
                 print(terr)
                 errorCnt += 1
-            except Exception:
+            except Exception as e:
                 print("ERROR OCCUERD!!("+str(errorCnt)+")")
+                print(e.args);
                 errorCnt += 1
             if(((Cnt != 0)and(Cnt % 140 == 0)) or (errorCnt >= 10)):
                 if(errorCnt >= 10):
