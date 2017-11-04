@@ -11,7 +11,7 @@ manyErrorCnt = 0
 Cnt = 0
 favoList = []
 tags = ["#いいねした人全員フォローする"]
-exTags = ["."]
+exTags = ["asbacbjsdbh"]
 def byExcept(tweet):
     for tag in exTags:
         if tag in tweet:
