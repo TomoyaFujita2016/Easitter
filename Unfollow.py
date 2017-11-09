@@ -1,6 +1,7 @@
 # coding: utf-8
 import byDestroy as byD
 import twitterApiSetup as tas
+import os
 import tweepy
 import byGoodUser as byG
 
@@ -46,3 +47,5 @@ for friend in friends:
             print("ERROR: FAILED TO UNFOLLOW " + str(friend))
     else:
         print("Didn't Unfollow " + str(friend))
+print('Unfollowing is done !')
+os.system('date')

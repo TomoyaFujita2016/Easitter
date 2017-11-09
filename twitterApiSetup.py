@@ -11,8 +11,8 @@ def decryptCode(code):
     return code.decode('rot_13').decode('base64_codec').decode('utf8')
 
 def tweetSetup():
-    CONSUMER_KEY = 'DdaLMhxUN4fsPocqGVn2Dhya5'
-    CONSUMER_SECRET = 'InmvzQj3b49SU9vqGyRgocwBrjLHwAuinzUsy0v2pz0JD96kuM'
+    CONSUMER_KEY = 'OMTYKPcmnzPetbhRphClw7obj'
+    CONSUMER_SECRET = 'rD9f14DfDKrJyVg2LcvUBRphSLi0afxjpP6o63Pe6AFCV0xnUH'
     auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
     
     if not os.path.exists(ACCESS_PATH):

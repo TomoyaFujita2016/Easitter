@@ -4,6 +4,7 @@ import byGoodUser as byG
 import tweepy
 import twitterApiSetup as tas
 import sys
+import os
 import time
 import random
 api = tas.tweetSetup()
@@ -50,5 +51,6 @@ try:
         print("Zzzzzzz")
         time.sleep(60)
 except KeyboardInterrupt:
-    print("\nFINISH!")
+    print("\nFollowing Back is done !")
+    os.system('date')
     print("CNT: "+str(FollowCnt))

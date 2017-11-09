@@ -2,6 +2,7 @@
 import tweepy
 import twitterApiSetup as tas
 import time
+import os
 import random
 api = tas.tweetSetup()
 #input own id to users
@@ -54,6 +55,8 @@ while True:
                 break
             if(manyErrorCnt >= 2):
                 print("TOO MANY ERRORS !!")
+                print("Flattering is done !")
+                os.system('date')
                 raise KeyboardInterrupt
             time.sleep(1 + random.randint(0,1))
 

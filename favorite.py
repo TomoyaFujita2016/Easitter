@@ -3,6 +3,7 @@ import tweepy
 import twitterApiSetup as tas
 import time
 import random
+import os
 api = tas.tweetSetup()
 byManyError = False
 favoCnt = 0
@@ -58,6 +59,8 @@ while True:
                 break
             if(manyErrorCnt >= 2):
                 print("TOO MANY ERRORS !!")
+                print("Favoritting is done!")
+                os.system('date')
                 raise KeyboardInterrupt
             time.sleep(1 + random.randint(0,1))
 
