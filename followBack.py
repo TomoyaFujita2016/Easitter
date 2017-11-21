@@ -33,23 +33,22 @@ def byFollow(api, friend_id, upperHashRatio,  MyFriends):
 
 print("Start Following Back!")
 try:
-    while True:
-        for MyFollower in MyFollowers_id:
-            if(not byD.byNotBeingFollowed(api, MyFollower, MyFollowers_id) and byFollow(api, MyFollower, 0.35,  MyFriends_id)):
-                try:
-                    api.create_friendship(MyFollower, True)
-                    print("(" + str(FollowCnt + 1)  +")Successed in following back " + str(MyFollower))
-                    MyFriends_id.append(MyFollower)
-                    FollowCnt += 1
-                except tweepy.error.TweepError as TER:
-                    print("FAILED TO FOLLOW BACK "+ str(MyFollower))
-                    print(TER)
-                if(FollowLimit <= FollowCnt):
-                    print("FollowLimit!")
-                    raise KeyboardInterrupt
-                time.sleep(1+ random.randint(1, 2))
-        print("Zzzzzzz")
-        time.sleep(60)
+    for MyFollower in MyFollowers_id:
+        if(not byD.byNotBeingFollowed(api, MyFollower, MyFollowers_id) and byFollow(api, MyFollower, 0.35,  MyFriends_id)):
+            try:
+                api.create_friendship(MyFollower, True)
+                print("(" + str(FollowCnt + 1)  +")Successed in following back " + str(MyFollower))
+                MyFriends_id.append(MyFollower)
+                FollowCnt += 1
+            except tweepy.error.TweepError as TER:
+                print("FAILED TO FOLLOW BACK "+ str(MyFollower))
+                print(TER)
+            if(FollowLimit <= FollowCnt):
+                print("FollowLimit!")
+                raise KeyboardInterrupt
+            time.sleep(1+ random.randint(1, 2))
+    print("Zzzzzzz")
+    time.sleep(60)
 except KeyboardInterrupt:
     print("\nFollowing Back is done !")
     os.system('date')
