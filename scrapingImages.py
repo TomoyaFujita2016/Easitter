@@ -2,6 +2,7 @@
 import tweepy
 import twitterApiSetup as tas
 import requests
+import time
 import shutil
 import pickle as pkl
 import os
@@ -10,7 +11,8 @@ PKL_DIR = "Data/"
 TWEET_IDS_PATH = "TWEET_IDS.pkl"
 IMAGE_URLS_PATH = "IMAGE_URLS_PATH.pkl"
 SAVE_DIR = "ImagesFromTwitter/"
-TAGS = ["写真"]
+TAGS = ["靴", "shoes"]
+downloadCnt = 0
 
 def confirmPklFile(path):
     if os.path.exists(path):
@@ -19,8 +21,8 @@ def confirmPklFile(path):
     else:
         return []
 
-def download_img(url, file_name):
-    print("Downloading from " + url)
+def download_img(url, file_name, downloadCnt):
+    print("[%4d]Downloading from "%downloadCnt + url)
     r = requests.get(url, stream=True)
     if r.status_code == 200:
         with open(SAVE_DIR + file_name, 'wb') as f:
@@ -45,18 +47,22 @@ if __name__=='__main__':
     while True:
         try:
             for tag in TAGS:
-                for tweet in api.search(q=TAGS, count=1000):
+                for tweet in api.search(q=tag, count=100):
                     if not hasattr(tweet, "extended_entities"):
                         # print("extended_entities is not included !")
                         continue
-                    if (not tweet.id in tweetIDs) and ("media" in tweet.extended_entities):
+                    if not(tweet.id in tweetIDs) and ("media" in tweet.extended_entities):
                         for media in tweet.extended_entities['media']:
                             url = media["media_url_https"]
-                            download_img(url, url.split("/")[-1])
+                            downloadCnt += 1
+                            download_img(url, url.split("/")[-1], downloadCnt)
                             imageUrls.append(url)
-                            tweetIDs.append(tweet.id)
+                        tweetIDs.append(tweet.id)
+                time.sleep(1)
+                    
         except KeyboardInterrupt:
             break
     
     savePklFile(PKL_DIR + TWEET_IDS_PATH, tweetIDs)
     savePklFile(PKL_DIR + IMAGE_URLS_PATH, imageUrls)
+    print("\n"+str(downloadCnt) + " images is downloaded !")
