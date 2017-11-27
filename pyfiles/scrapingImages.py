@@ -1,5 +1,3 @@
-#coding: utf-8
-import tweepy
 from pyfiles import twitterApiSetup as tas
 import requests
 import time
@@ -34,14 +32,13 @@ def newTweetId(api, tag):
         return 0
     return tweetData[-1].id
 
-def main():
+def main(TAGS = ["クラフトビール"]):
     PKL_DIR = "./PklData/"
     TWEET_IDS_PATH = "TWEET_IDS.pkl"
     IMAGE_URLS_PATH = "IMAGE_URLS_PATH.pkl"
     SAVE_DIR = "./ImagesFromTwitter/"
-    TAGS = ["shose", "eee"]
     downloadCnt = 0
-    NUMBER_OF_GET = 20
+    NUMBER_OF_GET = 100
     try: 
          if not os.path.exists(SAVE_DIR):
              os.mkdir(SAVE_DIR)

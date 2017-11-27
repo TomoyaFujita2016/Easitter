@@ -4,6 +4,7 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--run", help="Please choose a mode. (fv: favorite, fl: flatter, sc: scraping, uf: unfollow, fo: follow, fb: followBack)")
+parser.add_argument("--tag", help="When you use '--run sc', you can choose search tag. example: '-tag cat,dog,mouse' (default: クラフトビール)")
 parser_args = parser.parse_args()
 
 if __name__=='__main__':
@@ -33,7 +34,11 @@ if __name__=='__main__':
             raise Exception
         if MODE == "sc":
             print("MODE: scraping")
-            pyfiles.scrapingImages.main()
+            if parser_args.tag:
+                tags = parser_args.tag.split(",")
+                pyfiles.scrapingImages.main(TAGS=tags)
+            else:   
+                pyfiles.scrapingImages.main()
             raise Exception
         if MODE == "uf":
             print("MODE: unfollow")
