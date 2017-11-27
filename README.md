@@ -25,8 +25,10 @@ tags = ['消します']
 - エラーコード429が急に出て来たらファボ制限
 - これは
 
+
 ```
-python favorite.py
+python easitter.py --run fv
+
 ```
 で動かすだけ
 - あとはほっとくだけでフォロワーが増える
