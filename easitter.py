@@ -7,11 +7,22 @@ parser.add_argument("--run", help="Please choose a mode. (fv: favorite, fl: flat
 parser_args = parser.parse_args()
 
 if __name__=='__main__':
-    print("Welcome to Easitter !")
-    MODE = "fv"
+    OKGREEN = '\033[92m'
+    ENDC = '\033[0m'
+    WARNING = '\033[93m'
+    OKBLUE = '\033[94m'
+    print(OKBLUE + "=================================================" + ENDC)
+    print(OKBLUE + "\n==== (´･ω･･`)"+ENDC+OKGREEN+ " Welcome to Easitter !"+ ENDC + OKBLUE+" (･Д･｀) ====\n" + ENDC)
+    print(OKBLUE + "=================================================" + ENDC)
+    MODE = "none"
     if parser_args.run:
         MODE = str(parser_args.run)
     try: 
+        if MODE == "none":
+            print(WARNING + "==== ***Please choose a mode !***")
+            print("==== 'python3 easitter.py --run [option]'")
+            print("==== fv: favorite, fl: flatter, sc: scraping, uf: unfollow, fo: follow, fb: followBack" + ENDC)
+            raise Exception
         if MODE == "fv":
             print("MODE: favorite")
             pyfiles.favorite.main()
