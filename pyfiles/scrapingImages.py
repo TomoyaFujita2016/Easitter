@@ -17,7 +17,7 @@ def confirmPklFile(path):
 
 def download_img(url, file_name, downloadCnt, SAVE_DIR):
     print("[%4d]Downloading from "%downloadCnt + url)
-    r = requests.get(url, stream=True)
+    r = requests.get(url+":orig", stream=True)
     if r.status_code == 200:
         with open(SAVE_DIR + file_name, 'wb') as f:
             r.raw.decode_content = True
@@ -27,12 +27,16 @@ def savePklFile(path, data):
     with open(path, "wb") as f:
         pkl.dump(data, f)
 
+def newTweetId(api, tag):
+    tweetData = api.search(q=tag, count=1)
+    return tweetData[-1].id
+
 def main():
-    PKL_DIR = "./Data/"
+    PKL_DIR = "./PklData/"
     TWEET_IDS_PATH = "TWEET_IDS.pkl"
     IMAGE_URLS_PATH = "IMAGE_URLS_PATH.pkl"
     SAVE_DIR = "./ImagesFromTwitter/"
-    TAGS = ["卵"]
+    TAGS = ["絵"]
     downloadCnt = 0
     NUMBER_OF_GET = 20
     try: 
@@ -45,19 +49,26 @@ def main():
          imageUrls = confirmPklFile(PKL_DIR + IMAGE_URLS_PATH)
          
          api = tas.tweetSetup()
-         for ep in range(NUMBER_OF_GET):
-             for tag in TAGS:
+         for tag in TAGS:
+             print("TAG: " + tag)
+             maxId = newTweetId(api, tag)
+             for ep in range(NUMBER_OF_GET):
                  try:
-                     for tweet in api.search(q=tag, count=100):
+                     print("PAGE: " + str(ep))
+                     print("TweetId: ~" + str(maxId))
+                     tweets = api.search(q=tag, count=100, max_id=maxId-1) 
+                     maxId = tweets[-1].id
+                     for tweet in tweets:
                          if not hasattr(tweet, "extended_entities"):
                              # print("extended_entities is not included !")
                              continue
                          if not(tweet.id in tweetIDs) and ("media" in tweet.extended_entities):
                              for media in tweet.extended_entities['media']:
                                  url = media["media_url_https"]
-                                 downloadCnt += 1
-                                 download_img(url, url.split("/")[-1], downloadCnt, SAVE_DIR)
-                                 imageUrls.append(url)
+                                 if not url in imageUrls:
+                                    downloadCnt += 1
+                                    download_img(url, url.split("/")[-1], downloadCnt, SAVE_DIR)
+                                    imageUrls.append(url)
                              tweetIDs.append(tweet.id)
                  except tweepy.error.TweepError as terr:
                      print(terr)
