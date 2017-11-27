@@ -6,7 +6,8 @@ import time
 import shutil
 import pickle as pkl
 import os
-
+import sys
+import traceback
 
 def confirmPklFile(path):
     if os.path.exists(path):
@@ -29,6 +30,8 @@ def savePklFile(path, data):
 
 def newTweetId(api, tag):
     tweetData = api.search(q=tag, count=1)
+    if len(tweetData) == 0:
+        return 0
     return tweetData[-1].id
 
 def main():
@@ -36,7 +39,7 @@ def main():
     TWEET_IDS_PATH = "TWEET_IDS.pkl"
     IMAGE_URLS_PATH = "IMAGE_URLS_PATH.pkl"
     SAVE_DIR = "./ImagesFromTwitter/"
-    TAGS = ["絵"]
+    TAGS = ["shose", "eee"]
     downloadCnt = 0
     NUMBER_OF_GET = 20
     try: 
@@ -52,11 +55,18 @@ def main():
          for tag in TAGS:
              print("TAG: " + tag)
              maxId = newTweetId(api, tag)
+             if maxId == 0:
+                 print("No result!")
+                 continue
              for ep in range(NUMBER_OF_GET):
                  try:
                      print("PAGE: " + str(ep))
                      print("TweetId: ~" + str(maxId))
+                     # print("max"+str(maxId))
                      tweets = api.search(q=tag, count=100, max_id=maxId-1) 
+                     if len(tweets) == 0:
+                         print("Already taken all images within 1 week.")
+                         break
                      maxId = tweets[-1].id
                      for tweet in tweets:
                          if not hasattr(tweet, "extended_entities"):
@@ -78,5 +88,6 @@ def main():
          savePklFile(PKL_DIR + TWEET_IDS_PATH, tweetIDs)
          savePklFile(PKL_DIR + IMAGE_URLS_PATH, imageUrls)
          print("\n"+str(downloadCnt) + " images is downloaded !")
-    except Exception as ex:
-        print(ex)
+    except:
+        _, _, tb = sys.exc_info()
+        traceback.print_tb(tb)
