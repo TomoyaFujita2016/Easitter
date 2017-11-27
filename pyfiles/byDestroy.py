@@ -1,5 +1,5 @@
 # coding: utf-8
-import twitterApiSetup as tas
+from pyfiles import twitterApiSetup as tas
 import datetime
 from datetime import timedelta
 import tweepy
