@@ -8,13 +8,14 @@ parser.add_argument("--tag", help="When you use '--run sc', you can choose searc
 parser_args = parser.parse_args()
 
 if __name__=='__main__':
+    red = "\033[31m"
     OKGREEN = '\033[92m'
-    ENDC = '\033[0m'
+    end = '\033[0m'
     WARNING = '\033[93m'
     OKBLUE = '\033[94m'
-    print(OKBLUE + "=================================================" + ENDC)
-    print(OKBLUE + "\n==== (´･ω･･`)"+ENDC+OKGREEN+ " Welcome to Easitter !"+ ENDC + OKBLUE+" (･Д･｀) ====\n" + ENDC)
-    print(OKBLUE + "=================================================" + ENDC)
+    print(OKBLUE + "=================================================" + end)
+    print(OKBLUE + "\n==== (´･ω･･`)"+end+OKGREEN+ " Welcome to Easitter !"+ end + OKBLUE+" (･Д･｀) ====\n" + end)
+    print(OKBLUE + "=================================================" + end)
     MODE = "none"
     if parser_args.run:
         MODE = str(parser_args.run)
@@ -22,18 +23,18 @@ if __name__=='__main__':
         if MODE == "none":
             print(WARNING + "==== ***Please choose a mode !***")
             print("==== 'python3 easitter.py --run [option]'")
-            print("==== fv: favorite, fl: flatter, sc: scraping, uf: unfollow, fo: follow, fb: followBack" + ENDC)
+            print("==== fv: favorite, fl: flatter, sc: scraping, uf: unfollow, fo: follow, fb: followBack" + end)
             raise Exception
         if MODE == "fv":
-            print("MODE: favorite")
+            print(red+"MODE: favorite"+end)
             pyfiles.favorite.main()
             raise Exception
         if MODE == "fl":
-            print("MODE: flatter")
+            print(red+"MODE: flatter"+end)
             pyfiles.flatterFavo.main()
             raise Exception
         if MODE == "sc":
-            print("MODE: scraping")
+            print(red+"MODE: scraping"+end)
             if parser_args.tag:
                 tags = parser_args.tag.split(",")
                 pyfiles.scrapingImages.main(TAGS=tags)
@@ -41,15 +42,15 @@ if __name__=='__main__':
                 pyfiles.scrapingImages.main()
             raise Exception
         if MODE == "uf":
-            print("MODE: unfollow")
+            print(red+"MODE: unfollow"+end)
             pyfiles.Unfollow.main()
             raise Exception
         if MODE == "fo":
-            print("MODE: follow")
+            print(red + "MODE: follow" + end)
             pyfiles.follow.main()
             raise Exception
         if MODE == "fb":
-            print("MODE: followBack")
+            print(red + "MODE: followBack" + end)
             pyfiles.followBack.main()
             raise Exception
     except Exception:
