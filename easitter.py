@@ -14,7 +14,7 @@ if __name__=='__main__':
     WARNING = '\033[93m'
     OKBLUE = '\033[94m'
     print(OKBLUE + "=================================================" + end)
-    print(OKBLUE + "\n==== (´･ω･･`)"+end+OKGREEN+ " Welcome to Easitter !"+ end + OKBLUE+" (･Д･｀) ====\n" + end)
+    print(OKBLUE + "==== (´･ω･･`)"+end+OKGREEN+ " Welcome to Easitter !"+ end + OKBLUE+" (･Д･｀) ====" + end)
     print(OKBLUE + "=================================================" + end)
     MODE = "none"
     if parser_args.run:
