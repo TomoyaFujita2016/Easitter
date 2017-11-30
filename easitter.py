@@ -5,7 +5,10 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("--run", help="Please choose a mode. (fv: favorite, fl: flatter, sc: scraping, uf: unfollow, fo: follow, fb: followBack)")
 parser.add_argument("--tag", help="When you use '--run sc', you can choose search tag. example: '--tag cat,dog,mouse' (default: クラフトビール)")
+parser.add_argument("--url", help="Search from hint of image url.")
+parser.add_argument("-face", help="Detect face", action="store_true")
 parser_args = parser.parse_args()
+
 
 if __name__=='__main__':
     red = "\033[31m"
@@ -17,13 +20,18 @@ if __name__=='__main__':
     print(OKBLUE + "==== (´･ω･･`)"+end+OKGREEN+ " Welcome to Easitter !"+ end + OKBLUE+" (･Д･｀) ====" + end)
     print(OKBLUE + "=================================================" + end)
     MODE = "none"
+    
     if parser_args.run:
         MODE = str(parser_args.run)
+    if parser_args.face:
+        byFace = True
+    else:
+        byFace = False
     try: 
         if MODE == "none":
             print(WARNING + "==== ***Please choose a mode !***")
             print("==== 'python3 easitter.py --run [option]'")
-            print("==== fv: favorite, fl: flatter, sc: scraping, uf: unfollow, fo: follow, fb: followBack" + end)
+            print("==== fv: favorite, fl: flatter, sc: scraping, uf: unfollow, fo: follow, fb: followBack, se: search image url" + end)
             raise Exception
         if MODE == "fv":
             print(red+"MODE: favorite"+end)
@@ -36,8 +44,8 @@ if __name__=='__main__':
         if MODE == "sc":
             print(red+"MODE: scraping"+end)
             if parser_args.tag:
-                tags = parser_args.tag.split(",")
-                pyfiles.scrapingImages.main(TAGS=tags)
+                tags = parser_args.tag.replace('"', "").split(",")
+                pyfiles.scrapingImages.main(TAGS=tags, byFACE=byFace)
             else:   
                 pyfiles.scrapingImages.main()
             raise Exception
@@ -53,7 +61,17 @@ if __name__=='__main__':
             print(red + "MODE: followBack" + end)
             pyfiles.followBack.main()
             raise Exception
-    except Exception:
+        if MODE == "se":
+            print(red+"MODE: search image url" + end)
+            if parser_args.url:
+                urls = parser_args.url.split(",")
+                pyfiles.searchImgUrl.main(urls)
+            else:
+                print(red+"Please input url." + end)
+                print("ex: --url jkndfac, sefbsdv")
+            raise Exception
+    except Exception as e:
+        print(e)
         pass
     
 

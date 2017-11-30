@@ -1,4 +1,5 @@
 from pyfiles import twitterApiSetup as tas
+from pyfiles import byFaceDetection as byF
 import requests
 import time
 from tqdm import tqdm
@@ -7,6 +8,7 @@ import pickle as pkl
 import os
 import sys
 import traceback
+import cv2
 
 def confirmPklFile(path):
     if os.path.exists(path):
@@ -15,13 +17,18 @@ def confirmPklFile(path):
     else:
         return []
 
-def download_img(url, file_name, downloadCnt, SAVE_DIR):
+def download_img(url, file_name, downloadCnt, SAVE_DIR, SAVE_DIR_FACE, byFace):
     # print("[%4d]Downloading from "%downloadCnt + url)
     r = requests.get(url+":orig", stream=True)
     if r.status_code == 200:
         with open(SAVE_DIR + file_name, 'wb') as f:
             r.raw.decode_content = True
             shutil.copyfileobj(r.raw, f)
+        if byFace:
+            image = cv2.imread(SAVE_DIR + file_name)
+            exFace = byF.detectFace(image)
+            if exFace:
+                cv2.imwrite(SAVE_DIR_FACE + file_name, image)
 
 def savePklFile(path, data):
     with open(path, "wb") as f:
@@ -33,7 +40,7 @@ def newTweetId(api, tag):
         return 0
     return tweetData[-1].id
 
-def main(TAGS = ["クラフトビール"]):
+def main(TAGS = ["クラフトビール"], byFACE=False):
     green = "\033[34m"
     cyan = "\033[36m"
     blue = "\033[35m"
@@ -42,6 +49,7 @@ def main(TAGS = ["クラフトビール"]):
     TWEET_IDS_PATH = "TWEET_IDS.pkl"
     IMAGE_URLS_PATH = "IMAGE_URLS_PATH.pkl"
     SAVE_DIR = "./ImagesFromTwitter/"
+    SAVE_DIR_FACE = "./ImageFromTwitterFace/"
     downloadCnt = 0
     NUMBER_OF_GET = 100
     try: 
@@ -49,6 +57,8 @@ def main(TAGS = ["クラフトビール"]):
              os.mkdir(SAVE_DIR)
          if not os.path.exists(PKL_DIR):
              os.mkdir(PKL_DIR)
+         if not os.path.exists(SAVE_DIR_FACE) and byFACE:
+             os.mkdir(SAVE_DIR_FACE)
 
          tweetIDs = confirmPklFile(PKL_DIR + TWEET_IDS_PATH)
          imageUrls = confirmPklFile(PKL_DIR + IMAGE_URLS_PATH)
@@ -82,7 +92,7 @@ def main(TAGS = ["クラフトビール"]):
                                  if not url in imageUrls:
                                     downloadCnt += 1
                                     pBar.set_description("[%4d]"%downloadCnt+cyan+"Downloading from ..%s" % url[28:44]+".." + green)
-                                    download_img(url, url.split("/")[-1], downloadCnt, SAVE_DIR)
+                                    download_img(url, url.split("/")[-1], downloadCnt, SAVE_DIR, SAVE_DIR_FACE, byFACE)
                                     imageUrls.append(url)
                              tweetIDs.append(tweet.id)
                          pBar.update(i - oldI)
