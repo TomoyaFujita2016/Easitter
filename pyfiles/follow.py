@@ -23,7 +23,7 @@ def byFollow(api, friend_id, lowerFFRatio, upperHashRatio, lowerTPDRatio, MyFrie
         print("[ " + str(friend_id) + " ] is a old user!")
         return False
     return True
-def main():
+def main(tags):
     api = tas.tweetSetup()
     me = api.me()
     MyFriends = byD.getFriendsIds(api, me.id)
@@ -32,7 +32,7 @@ def main():
     FollowCnt = 0
     FollowCntFromFriend= 0
     #tags = ["絵かき","絵", "機械学習", "アプリ", "ゲーム", "ベンチャー", "強化学習", "アプリ開発","Android", "個人","院生", "帰宅", "個人開発", "DeepLearning", "学習結果"]
-    tags = ["機械学習", "強化学習", "卒論" ,"Androidアプリ", "Androidゲームアプリ", "ゲームアプリ開発","AndroidStudio", "AndroidApp", "AndroidDeveloper", "個人開発", "DeepLearning"]
+    # tags = ["機械学習", "強化学習", "卒論" ,"Androidアプリ", "Androidゲームアプリ", "ゲームアプリ開発","AndroidStudio", "AndroidApp", "AndroidDeveloper", "個人開発", "DeepLearning"]
     
     FollowCnt = 0
     FollowCntFromFriend = 0

@@ -47,7 +47,7 @@ if __name__=='__main__':
                 tags = parser_args.tag.replace('"', "").split(",")
                 pyfiles.scrapingImages.main(TAGS=tags, byFACE=byFace)
             else:   
-                pyfiles.scrapingImages.main()
+                pyfiles.scrapingImages.main(byFACE=byFace)
             raise Exception
         if MODE == "uf":
             print(red+"MODE: unfollow"+end)
@@ -55,7 +55,12 @@ if __name__=='__main__':
             raise Exception
         if MODE == "fo":
             print(red + "MODE: follow" + end)
-            pyfiles.follow.main()
+            if parser_args.tag:
+                tags = parser_args.tag.replace('"', "").split(",")
+                pyfiles.follow.main(tags)
+            else:
+                print("Please input Tag!")
+
             raise Exception
         if MODE == "fb":
             print(red + "MODE: followBack" + end)
