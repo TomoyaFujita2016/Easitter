@@ -8,7 +8,13 @@ import pickle as pkl
 import os
 import sys
 import traceback
-import cv2
+
+byCv = True
+try:
+    import cv2
+except:
+    byCv = False
+
 
 def confirmPklFile(path):
     if os.path.exists(path):
@@ -52,6 +58,10 @@ def main(TAGS = ["クラフトビール"], byFACE=False):
     SAVE_DIR_FACE = "./ImageFromTwitterFace/"
     downloadCnt = 0
     NUMBER_OF_GET = 100
+    
+    if not byCv:
+        byFACE = False
+    
     try: 
          if not os.path.exists(SAVE_DIR):
              os.mkdir(SAVE_DIR)

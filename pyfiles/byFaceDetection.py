@@ -1,4 +1,8 @@
-import cv2 
+try:
+    import cv2 
+except:
+    print("if you want to use face detection, please install opencv!")
+
 def detectFace(image):
     cascadePath = "/usr/local/opt/opencv/share/OpenCV/haarcascades/haarcascade_frontalface_alt.xml"
     FACE_SHAPE = 0.45
