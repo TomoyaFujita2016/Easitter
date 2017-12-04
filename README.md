@@ -22,7 +22,7 @@ python3 easitter.py --run fl
 ```
 ### 5. 自分が興味があることについてツイートしてるユーザーをフォローしたい時
 ```
-python3 easitter.py --run fo
+python3 easitter.py --run fo --tag "ドラ●もん"
 ```
 
 ## さんこと
