@@ -1,68 +1,37 @@
 #coding: utf-8
-import tweepy
-from pyfiles import twitterApiSetup as tas
+import tweepy 
 import time
-import os
 import random
-def main():
-    api = tas.tweetSetup()
-    #input own id to users
-    users = [883630081473617921];
-    byManyError = False
+import os
+from tqdm import tqdm
+
+def main(easitter):
+    print("MODE: flattering")
     favoCnt = 0
-    errorCnt = 0
-    manyErrorCnt = 0
-    Cnt = 0
+    me = easitter.ME
+    users = set()
+    users.add(me)
     
-    print("Let's flatter !!")
-    while True:
-        try:
-            for tweet in api.home_timeline(count=100):
-                try:
-                    if 350 < favoCnt:
-                        users = []
-                    tweetId = tweet.id
-                    tweetUser = tweet.user.id
-                    if tweetUser not in users:
-                        api.create_favorite(tweetId)
-                        print("Successed in flattering this tweet !("+str(favoCnt + 1) +") id: "+ str(tweetId))
-                        users.append(tweetUser)
-                        favoCnt += 1
-                    else:
-                        print("Already flattered: " + str(tweetUser))
-                    
-                    errorCnt = 0
-                    manyErrorCnt = 0
-    
-                except tweepy.error.TweepError as terr:
-                    print("ERROR: FAILED TO FLATTER!("+str(errorCnt)+") name:"+ tweet.user.name + " id:"+str(tweet.id))
-                    print(terr)
-                    errorCnt += 1
-                except Exception:
-                    print("ERROR OCCUERD!!("+str(errorCnt)+")")
-                    errorCnt += 1
-                if(((Cnt != 0)and(Cnt % 140 == 0)) or (errorCnt >= 10)):
-                    if(errorCnt >= 10):
-                        byManyError = True
-                    errorCnt = 0
-                    print("Zzzzzzzz.....")
-                    time.sleep(90)
-                    byFirst = True
-                Cnt += 1
-                if(byManyError):
-                    byManyError = False
-                    manyErrorCnt += 1
-                    print("ManyError: back to start tweet")
-                    break
-                if(manyErrorCnt >= 2):
-                    print("TOO MANY ERRORS !!")
-                    print("Flattering is done !")
-                    os.system('date')
-                    raise KeyboardInterrupt
-                time.sleep(1 + random.randint(0,1))
-    
-                
-                
-        except KeyboardInterrupt:
-            print("\nFLATTERING COUNT: "+ str(favoCnt))
-            break
+    try:
+        # get and filter tweets
+        tweets = easitter.getUserTimeline(me, limit=10)
+        filteredTweets, users = easitter.tweetsFiltering(tweets, users=users)
+
+        for tweet in tweets:
+            code, message = easitter.favoriteTweet(tweetId=tweet.id)
+            
+            # favo restriction
+            if code == 429:
+                print(message)
+            if code == 1:
+                favoCnt += 1
+            
+            print("[%3d] " % favoCnt + message)
+
+    except tweepy.error.TweepError as tp:
+        print(tp)
+    except Exception as e:
+        print(e)
+    except KeyboardInterrupt:
+        pass
+    print("\nFlattering count: %4d" % favoCnt)

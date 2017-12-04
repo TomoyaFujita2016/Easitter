@@ -3,46 +3,52 @@ import pyfiles
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--run", help="Please choose a mode. (fv: favorite, fl: flatter, sc: scraping, uf: unfollow, fo: follow, fb: followBack)")
-parser.add_argument("--tag", help="When you use '--run sc', you can choose search tag. example: '--tag cat,dog,mouse' (default: クラフトビール)")
+parser.add_argument("--run",\
+        help="Please choose a mode. \
+        (fv: favorite, fl: flatter, sc: scraping, \
+        uf: unfollow, fo: follow, fb: followBack)")
+parser.add_argument("--tag",\
+        help="When you use '--run sc', you can choose search tag.\
+        example: '--tag cat,dog,mouse' (default: クラフトビール)")
 parser.add_argument("--url", help="Search from hint of image url.")
 parser.add_argument("-face", help="Detect face", action="store_true")
 parser_args = parser.parse_args()
 
 
 if __name__=='__main__':
-    red = "\033[31m"
-    OKGREEN = '\033[92m'
-    end = '\033[0m'
-    WARNING = '\033[93m'
-    OKBLUE = '\033[94m'
-    print(OKBLUE + "=================================================" + end)
-    print(OKBLUE + "==== (´･ω･･`)"+end+OKGREEN+ " Welcome to Easitter !"+ end + OKBLUE+" (･Д･｀) ====" + end)
-    print(OKBLUE + "=================================================" + end)
-    MODE = "none"
+    print("=================================================")
+    print("==== (´･ω･･`) Welcome to Easitter ! (･Д･｀) ====")
+    print("=================================================")
     
+    MODE = None
+    # mode
     if parser_args.run:
         MODE = str(parser_args.run)
+    # face
     if parser_args.face:
         byFace = True
     else:
         byFace = False
+    
     try: 
-        if MODE == "none":
-            print(WARNING + "==== ***Please choose a mode !***")
+        if MODE == None:
+            print("==== ***Please choose a mode !***")
             print("==== 'python3 easitter.py --run [option]'")
-            print("==== fv: favorite, fl: flatter, sc: scraping, uf: unfollow, fo: follow, fb: followBack, se: search image url" + end)
+            print("==== fv: favorite, fl: flatter, sc: scraping,uf: unfollow, fo: follow, fb: followBack, se: search image url")
             raise Exception
+        
+        # api setup
+        ATAS = pyfiles.twitterApiSetup.getAccessKeys()
+        easitter = pyfiles.Easitter.Easitter(AT=ATAS[0], AS=ATAS[1])
+
         if MODE == "fv":
-            print(red+"MODE: favorite"+end)
-            pyfiles.favorite.main()
+            pyfiles.favorite.main(easitter)
             raise Exception
         if MODE == "fl":
-            print(red+"MODE: flatter"+end)
-            pyfiles.flatterFavo.main()
+            pyfiles.flatterFavo.main(easitter)
             raise Exception
         if MODE == "sc":
-            print(red+"MODE: scraping"+end)
+            print("MODE: scraping")
             if parser_args.tag:
                 tags = parser_args.tag.replace('"', "").split(",")
                 pyfiles.scrapingImages.main(TAGS=tags, byFACE=byFace)
@@ -50,11 +56,11 @@ if __name__=='__main__':
                 pyfiles.scrapingImages.main(byFACE=byFace)
             raise Exception
         if MODE == "uf":
-            print(red+"MODE: unfollow"+end)
+            print("MODE: unfollow")
             pyfiles.Unfollow.main()
             raise Exception
         if MODE == "fo":
-            print(red + "MODE: follow" + end)
+            print("MODE: follow")
             if parser_args.tag:
                 tags = parser_args.tag.replace('"', "").split(",")
                 pyfiles.follow.main(tags)
@@ -63,16 +69,16 @@ if __name__=='__main__':
 
             raise Exception
         if MODE == "fb":
-            print(red + "MODE: followBack" + end)
+            print("MODE: followBack")
             pyfiles.followBack.main()
             raise Exception
         if MODE == "se":
-            print(red+"MODE: search image url" + end)
+            print("MODE: search image url")
             if parser_args.url:
                 urls = parser_args.url.split(",")
                 pyfiles.searchImgUrl.main(urls)
             else:
-                print(red+"Please input url." + end)
+                print("Please input url.")
                 print("ex: --url jkndfac, sefbsdv")
             raise Exception
     except Exception as e:
