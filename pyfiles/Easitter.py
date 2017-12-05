@@ -14,17 +14,17 @@ class Easitter(object):
     AT = "883630081473617921-5EHbdHAPn7MURLhFtD0uewHvMQPs3X2"
     AS = "0ObJeBCW2yszFr8elB8PDGxi24JEoVpxmTSAbELucy9oe"
 
-    SAMPLE_NUM = 100
-    # if it's 1.0, ex) follow=100 and follower=0
-    # if it's 0.5, ex) follow=100 and follower=100
-    # if it's 0.25 ex) follow=33 and follower=100
-    MIN_FRIENDS_RATIO = 0.35
-    # 1 month
-    MAX_DAY_SPAN = 7*4
-    # if it's 1.0, all tweets have url or hashtag
-    MIN_HASHURL_RATIO = 0.5
-
     def __init__(self, CK=CK,CS=CS,AT=AT,AS=AS):
+        self.SAMPLE_NUM = 50
+        # if it's 1.0, ex) follow=100 and follower=0
+        # if it's 0.5, ex) follow=100 and follower=100
+        # if it's 0.25 ex) follow=33 and follower=100
+        self.MIN_FRIENDS_RATIO = 0.35
+        # 1 month
+        self.MAX_DAY_SPAN = 7*4.
+        # if it's 1.0, all tweets have url or hashtag
+        self.MIN_HASHURL_RATIO = 0.55
+        
         auth = tweepy.OAuthHandler(CK, CS)
         auth.set_access_token(AT, AS)
 
@@ -32,7 +32,7 @@ class Easitter(object):
         self.ME = self._getMe()
 
     def _getMe(self):
-        return self.API.me()
+        return self.API.me().id
     
     def _getTweetId(self, tweet):
         return tweet.id
@@ -41,7 +41,7 @@ class Easitter(object):
         return self.API.get_user(userId)
     
     def _byProtected(self, userId):
-        user = _getUser(userId)
+        user = self._getUser(userId)
         return user.protected
     
     def _getNewestTweetId(self, tag, maxId=None):
@@ -52,6 +52,10 @@ class Easitter(object):
         if len(tweet) == 0:
             return 0, 0
         return tweet, tweet[-1].id
+    
+    def getUsername(self, userId):
+        return self._getUser(userId).screen_name
+
 
     def byInclude(self, words, target):
         if type(words) == list:
@@ -62,34 +66,59 @@ class Easitter(object):
         if words in target:
             return True
         return False
-
-    def byGoodUser(self, userId):
+    
+    def byFollowBack(self, userId):
         # Whether the user follows me or not
         if not self.byFollowedMe(userId):
-            return False
+            return False, "Being NOT Followed!"
         # Whether the user's last tweet is old or not
-        if MAX_DAY_SPAN < self.getDaySpan(userId):
-            return False
+        span = self.getDaySpan(userId)
+        if self.MAX_DAY_SPAN < span:
+            return False, "Old User! " + str(span)
         # Whether the user's tweets have url or hash tag
-        if MIN_HASHURL_RATIO < self.getHashUrlRatio(userId):
-            return False
+        huRatio = self.getHashUrlRatio(userId)
+        if self.MIN_HASHURL_RATIO < huRatio:
+            return False, "Crazy Hash Tagger! " + str(huRatio)
         # Whether the user is a bot or not
         if self.byBot(userId):
-            return False
+            return False, "Bot!"
         # Whether the user tweet frequently or not
         #if MIN_TWEET_PER_DAY > self.getTweetPerDay(userId):
             #return False
-        return True
+        return True, ""
+
+    def byGoodUser(self, userId):
+        # Whether the user's last tweet is old or not
+        #print(str(self.getDaySpan(userId)))
+        #if self.MAX_DAY_SPAN < self.getDaySpan(userId):
+        #    print(" old user")
+        #    return False, "Old User!"
+        # Whether the user's tweets have url or hash tag
+        if self.MIN_HASHURL_RATIO < self.getHashUrlRatio(userId):
+            return False, "Crazy Hash Tagger!"
+        # Whether the user is a bot or not
+        if self.byBot(userId):
+            return False, "Bot !"
+        # Whether the user tweet frequently or not
+        #if MIN_TWEET_PER_DAY > self.getTweetPerDay(userId):
+            #return False
+        return True, ""
 
     def getDaySpan(self, userId):
-        lastTweet = self.getTweets(userId, limit=1)
-        if len(lastTweet) == 0:
-            # Too long ??
-            return 365*8
-        newestDate = lastTweet.created_at
-        span = datetime.datetime.today() - newestDate
-        return span.days
-
+        try:
+            lastTweet = self.getTweets(userId, limit=1)
+            if len(lastTweet) == 0:
+                # Too long ??
+                return 365*8
+            newestDate = lastTweet[0].created_at
+            #print(str(newestDate) + " / " + str(datetime.datetime.today()))
+            span = datetime.datetime.today() - newestDate
+            #print("Days: " + str(span.days))
+            return span.days
+        except Exception as e:
+            print(e)
+        except tweepy.error.TweepError as e:
+            print(e)
 
     def getUserData(self, userId):    
         try:
@@ -103,34 +132,48 @@ class Easitter(object):
         except tweepy.error.TweepError as et:
             print(et)
             return {}
-    
-    # Too old tweet is inefficiency to increase followers, so I made pageNum 5.
-    def searchTweets(self, tag, pageNum=5, maxIdOrg=None):
+
+    def getTimeline(self, limit=50000, resultType="recent"):
         try:
-            if maxIdOrg is None:
-                newestTweet, maxId = self._getNewestTweetId(tag)
-            else:
-                maxId = maxIdOrg
-                newestTweet, maxId = self._getNewestTweetId(tag, maxId=maxIdOrg)
+            tweets = []
+            tweetsObj = tweepy.Cursor(self.API.home_timeline,
+                    result_type=resultType,
+                    exclude_replies = False).items(limit)
             
-            if type(newestTweet) is int:
-                return [], None
-            searchedTweets = [newestTweet]
-            pBar = tqdm(range(pageNum))
-            for page in pBar:
-                pBar.set_description("PAGE:[%2d/%2d] Getting Tweets !" % (page+1, pageNum))
-                tweets = self.API.search(q=tag, count=100, max_id=maxId-1)
-                if len(tweets) == 0:
+            pBar = tqdm(tweetsObj, ascii=True, total=limit, desc="Getting Tweets!")
+            for cnt, tweet in enumerate(pBar):
+                pBar.update(1)
+                if not cnt < limit:
                     break
-                searchedTweets.extend(tweets[::-1])
-                maxId = tweets[-1].id
+                tweets.append(tweet)
         except tweepy.error.TweepError as et:
             print(et)
         except Exception as e:
             print(e)
-        print("%d Tweets was gotten !" % len(searchedTweets))
-        # first index has SearchResult Object
-        return searchedTweets[1:], maxId
+        return tweets
+
+    def searchTweets(self, tag, limit=50000, tfilter=" -filter:retweets", resultType="recent"):
+        # if tfilter is appended to tag, it'll have some problem about tqdm, or what???.
+        # I don't know why it'll have the problem.
+        #tag += tfilter
+        try:
+            tweets = []
+            tweetsObj = tweepy.Cursor(self.API.search, 
+                    q=tag, 
+                    result_type=resultType,
+                    exclude_replies = True).items(limit)
+            
+            pBar = tqdm(tweetsObj, ascii=True, total=limit, desc="Getting Tweets!")
+            for cnt, tweet in enumerate(pBar):
+                pBar.update(1)
+                if not cnt < limit:
+                    break
+                tweets.append(tweet)
+        except tweepy.error.TweepError as et:
+            print(et)
+        except Exception as e:
+            print(e)
+        return tweets
     
     # if the tweets has more than 2 tweet which is tweeted by same user, it delete old tweet.
     def tweetsFiltering(self, tweets, users=set()): 
@@ -147,26 +190,15 @@ class Easitter(object):
             print(et)
         except Exception as e:
             print(e)
-    def getUserTimeline(self, userId, limit=200):
-        tweets = []
-        try:
-            tweetsObj = tweepy.Cursor(self.API.user_timeline, id=userId).items(200)
-            for cnt, tweet in enumerate(tweets):
-                if not cnt < limit:
-                    break
-                tweets.append(tweet)
-        except tweepy.error.TweepError as et:
-            print(et)
-        return tweets
 
-    def getFriendIds(self, screenName, limit=5000):
-        if self._byProtected(screenName):
+    def getFriendIds(self, userId, limit=100000):
+        if self._byProtected(userId):
             return []
         friendIds = []
         try:
             friends = tweepy.Cursor(\
                     self.API.friends_ids,\
-                    id = screenName, \
+                    user_id = userId, \
                     cursor = -1\
                     ).items()
             for cnt, friend in enumerate(friends):
@@ -178,16 +210,15 @@ class Easitter(object):
             print(et)
             return []
 
-    def getFollowerIds(self, screenName, limit=5000):
-        if self._byProtected(screenName):
+    def getFollowerIds(self, userId, limit=5000):
+        if self._byProtected(userId):
             return []
         followerIds = []
         try:
             followers = tweepy.Cursor(\
                     self.API.followers_ids,\
-                    id = screenName, \
-                    cursor = -1\
-                    ).items()
+                    user_id = userId, \
+                    cursor = -1).items()
             for cnt, follower in enumerate(followers):
                 if not cnt < limit:
                     break
@@ -207,21 +238,22 @@ class Easitter(object):
             return "", "", ""
         return tweetText, tweetFavo, tweetRet
 
-    def getTweets(self, screenName, limit=200):
+    def getTweets(self, userId, limit=50):
         tweets = []
         try:
             tweetsObj = tweepy.Cursor( \
                     self.API.user_timeline, \
-                    screen_name=screenName, \
+                    user_id=userId, \
                     exclude_replies = True \
-                    ).items()
+                    ).items(limit)
             for cnt, tweet in enumerate(tweetsObj):
                 if not cnt < limit:
                     break
+                # print(tweet.text.replace("\n", ""))
                 tweets.append(tweet)
         except tweepy.error.TweepError as et:
             print(et)
-            return []
+        
         return tweets
     
     def favoriteTweet(self, tweetId=None, tweet=None):
@@ -229,26 +261,44 @@ class Easitter(object):
             return False 
         if not tweet is None:
             tId = self._getTweetId(tweet)
-        if not tweetId is None:
+        elif not tweetId is None:
             tId = tweetId
+        else:
+            print("please input a tweet id")
         try:
             self.API.create_favorite(tId)
-            return 1, "Succeed in favoritting this tweet!"
+            return 1, "Succeed in favoritting this tweet! %d"%tId
         
         except tweepy.error.TweepError as tp:    
             #print(type(tp.reason))
-            erL = self.arrangeListStr(tp.reason)
-            return int(erL[1]), erL[3]
+            if "429" in tp.reason:
+                return 429, "Favo restriction! %d"%tId
+            if "139" in tp.reason:
+                return 139, "You have already favorite it! %d"%tId
+            return -1, "Exception! %d"%tId
 
     def follow(self, userId):
         try:
+            #self.API.create_friendship(userId, True)
+            #self._getUser(userId).follow()
             self.API.create_friendship(userId, True)
+            return 1, "Succeed in follow " + self.getUsername(userId)
         except tweepy.error.TweepError as tp:
-            print(tp)
+            return -1, tp.reason+ " " + self.getUsername(userId)
+    
+    def unfollow(self, userId):
+        try:
+            #self.API.create_friendship(userId, True)
+            #self._getUser(userId).follow()
+            self.API.destroy_friendship(userId, True)
+            return 1, "Succeed in unfollow " + self.getUsername(userId)
+        except tweepy.error.TweepError as tp:
+            return -1, tp.reason+ " " + self.getUsername(userId)
     
     def getFriendShip(self, obsUserId, tarUserId):
         # if obsUser follows tarUser, it returns True
-        return self.API.exists_friendship(obsUserId, tarUserId)
+        followersIds = self.getFollowerIds(tarUserId)
+        return (obsUserId in followersIds)
     
     def byFollowedMe(self, userId):
         return self.getFriendShip(userId,self._getMe())
@@ -263,20 +313,23 @@ class Easitter(object):
     
     def byHashOrUrl(self, tweet):
         NG_LIST = ["#", "http", "/"]
-        return self._byInclude(NG_LIST, target)
+        return self.byInclude(NG_LIST, tweet)
     
     def getHashUrlRatio(self, userId):
-        tweets = self.getTweetData(userId, limit=SAMPLE_NUM)
+        tweets = self.getTweets(userId, limit=self.SAMPLE_NUM)
         hashUrlCnt = 0
-        for tweet in tweets:
-            if self.byHashOrUrl(tweet):
-                hashUrlCnt += 1
+        try:
+            for tweet in tweets:
+                if self.byHashOrUrl(tweet.text):
+                   hashUrlCnt += 1
+        except Exception as e:
+            print(e)
         return hashUrlCnt / len(tweets)
 
     def byBot(self, userId):
         NG_LIST = ["まとめ", "bot", "Bot", "BOT"]
         user = self._getUser(userId)
-        return self._byInclude(NG_LIST, user.name)
+        return self.byInclude(NG_LIST, user.name)
 
     def getFriendRatio(self, userId):
         userData = self.getUserData(userId)

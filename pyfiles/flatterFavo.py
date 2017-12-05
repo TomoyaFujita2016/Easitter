@@ -14,12 +14,12 @@ def main(easitter):
     
     try:
         # get and filter tweets
-        tweets = easitter.getUserTimeline(me, limit=10)
+        tweets = easitter.getTimeline(limit=5000)
         filteredTweets, users = easitter.tweetsFiltering(tweets, users=users)
 
-        for tweet in tweets:
+        for tweet in filteredTweets:
             code, message = easitter.favoriteTweet(tweetId=tweet.id)
-            
+            #print(tweet.text)
             # favo restriction
             if code == 429:
                 print(message)

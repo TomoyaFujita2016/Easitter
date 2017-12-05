@@ -16,10 +16,10 @@ parser_args = parser.parse_args()
 
 
 if __name__=='__main__':
-    print("=================================================")
+    print("\033[92m=================================================")
     print("==== (´･ω･･`) Welcome to Easitter ! (･Д･｀) ====")
-    print("=================================================")
-    
+    print("=================================================\033[0m")
+
     MODE = None
     # mode
     if parser_args.run:
@@ -29,17 +29,12 @@ if __name__=='__main__':
         byFace = True
     else:
         byFace = False
-    
+
     try: 
-        if MODE == None:
-            print("==== ***Please choose a mode !***")
-            print("==== 'python3 easitter.py --run [option]'")
-            print("==== fv: favorite, fl: flatter, sc: scraping,uf: unfollow, fo: follow, fb: followBack, se: search image url")
-            raise Exception
-        
+
         # api setup
-        ATAS = pyfiles.twitterApiSetup.getAccessKeys()
-        easitter = pyfiles.Easitter.Easitter(AT=ATAS[0], AS=ATAS[1])
+        CCAA = pyfiles.twitterApiSetup.getAccessKeys()
+        easitter = pyfiles.Easitter.Easitter(CK=CCAA[0], CS=CCAA[1], AT=CCAA[2], AS=CCAA[3])
 
         if MODE == "fv":
             pyfiles.favorite.main(easitter)
@@ -51,39 +46,32 @@ if __name__=='__main__':
             print("MODE: scraping")
             if parser_args.tag:
                 tags = parser_args.tag.replace('"', "").split(",")
-                pyfiles.scrapingImages.main(TAGS=tags, byFACE=byFace)
+                pyfiles.scrapingImages.main(easitter, TAGS=tags, byFACE=byFace)
             else:   
-                pyfiles.scrapingImages.main(byFACE=byFace)
+                pyfiles.scrapingImages.main(easitter, byFACE=byFace)
             raise Exception
         if MODE == "uf":
-            print("MODE: unfollow")
-            pyfiles.Unfollow.main()
+            pyfiles.Unfollow.main(easitter)
             raise Exception
         if MODE == "fo":
-            print("MODE: follow")
             if parser_args.tag:
                 tags = parser_args.tag.replace('"', "").split(",")
-                pyfiles.follow.main(tags)
+                pyfiles.follow.main(easitter, tags)
             else:
                 print("Please input Tag!")
 
             raise Exception
         if MODE == "fb":
-            print("MODE: followBack")
-            pyfiles.followBack.main()
+            pyfiles.followBack.main(easitter)
             raise Exception
-        if MODE == "se":
-            print("MODE: search image url")
-            if parser_args.url:
-                urls = parser_args.url.split(",")
-                pyfiles.searchImgUrl.main(urls)
-            else:
-                print("Please input url.")
-                print("ex: --url jkndfac, sefbsdv")
-            raise Exception
+
+        print("==== ***Please choose a mode !***")
+        print("==== 'python3 easitter.py --run [option]'")
+        print("==== fv: favorite, fl: flatter, sc: scraping,uf: unfollow, fo: follow, fb: followBack")
+    
     except Exception as e:
         print(e)
         pass
-    
+
 
 

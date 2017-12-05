@@ -1,0 +1,7 @@
+pyfiles/__pycache__/
+*.pyc
+*.swp
+.python-version
+.DS_Store
+AC_PATH/
+PklData/
