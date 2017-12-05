@@ -1,5 +1,5 @@
 # Easitter ver2.0 !!!
-
+Even if your account is frozen by this program, TomoyaFujita2016 assumes no responsibility.
 ## Requirements
 1. python3
 2. tweepy
