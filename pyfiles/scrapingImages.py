@@ -44,7 +44,8 @@ def main(easitter, TAGS = ["クラフトビール"], byFACE=False):
     SAVE_DIR = "./ImagesFromTwitter/"
     SAVE_DIR_FACE = "./FaceImageFromTwitter/"
     downloadCnt = 0
-    NUMBER_OF_GET = 5000
+    NUMBER_OF_GET = 5000.
+    GET_PER = int(NUMBER_OF_GET / len(TAGS))
     users = set()
 
     if byFACE:
@@ -62,7 +63,7 @@ def main(easitter, TAGS = ["クラフトビール"], byFACE=False):
 
     for tag in TAGS:
         print("TAG: %s" % tag)
-        tweets = easitter.searchTweets(tag, limit=NUMBER_OF_GET)
+        tweets = easitter.searchTweets(tag, limit=GET_PER)
         filteredTweets, users = easitter.tweetsFiltering(tweets, users=users)
         
         for tweet in filteredTweets:
