@@ -15,7 +15,7 @@ def main(easitter):
                 code, message = easitter.unfollow(fId)
                 if code == 1:
                     unFollowCnt += 1
-            print("[%3d] %s caused by %s" %(unFollowCnt, message, messageC))
+            print("[%3d] %s %s" %(unFollowCnt, message, messageC))
 
     except KeyboardInterrupt:
         print("\nunFollow is done !")

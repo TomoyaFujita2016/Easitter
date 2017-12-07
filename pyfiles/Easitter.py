@@ -31,6 +31,9 @@ class Easitter(object):
         self.API = tweepy.API(auth, api_root='/1.1', wait_on_rate_limit=True)
         self.ME = self._getMe()
 
+        self.friends = self.getFriendIds(self.ME)
+        self.followers = self.getFollowerIds(self.ME)
+
     def _getMe(self):
         return self.API.me().id
     
@@ -70,18 +73,18 @@ class Easitter(object):
     def byFollowBack(self, userId):
         # Whether the user follows me or not
         if not self.byFollowedMe(userId):
-            return False, "Being NOT Followed!"
+            return False, "caused by Being NOT Followed!"
         # Whether the user's last tweet is old or not
         span = self.getDaySpan(userId)
         if self.MAX_DAY_SPAN < span:
-            return False, "Old User! " + str(span)
+            return False, "caused by Old User! " + str(span)
         # Whether the user's tweets have url or hash tag
         huRatio = self.getHashUrlRatio(userId)
         if self.MIN_HASHURL_RATIO < huRatio:
-            return False, "Crazy Hash Tagger! " + str(huRatio)
+            return False, "caused by Crazy Hash Tagger! " + str(huRatio)
         # Whether the user is a bot or not
         if self.byBot(userId):
-            return False, "Bot!"
+            return False, "caused by Bot!"
         # Whether the user tweet frequently or not
         #if MIN_TWEET_PER_DAY > self.getTweetPerDay(userId):
             #return False
@@ -95,10 +98,10 @@ class Easitter(object):
         #    return False, "Old User!"
         # Whether the user's tweets have url or hash tag
         if self.MIN_HASHURL_RATIO < self.getHashUrlRatio(userId):
-            return False, "Crazy Hash Tagger!"
+            return False, "caused by Crazy Hash Tagger!"
         # Whether the user is a bot or not
         if self.byBot(userId):
-            return False, "Bot !"
+            return False, "caused by Bot !"
         # Whether the user tweet frequently or not
         #if MIN_TWEET_PER_DAY > self.getTweetPerDay(userId):
             #return False
@@ -282,6 +285,7 @@ class Easitter(object):
             #self.API.create_friendship(userId, True)
             #self._getUser(userId).follow()
             self.API.create_friendship(userId, True)
+            self.friends.append(userId)
             return 1, "Succeed in follow " + self.getUsername(userId)
         except tweepy.error.TweepError as tp:
             return -1, tp.reason+ " " + self.getUsername(userId)
@@ -301,7 +305,7 @@ class Easitter(object):
         return (obsUserId in followersIds)
     
     def byFollowedMe(self, userId):
-        return self.getFriendShip(userId,self._getMe())
+        return userId in self.followers
 
     def getTweetPerDay(self, userId):
         today = datetime.datetime.today()
