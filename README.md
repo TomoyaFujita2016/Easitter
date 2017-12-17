@@ -29,6 +29,7 @@ optional arguments:
               tag cat,dog,mouse' (default: クラフトビール)
   --url URL   Search from hint of image url.
   -face       Detect face
+
 ```
 As you can see, you can choose MODE and some options.
 The following examples are ways to use Easitter !
