@@ -8,13 +8,14 @@ from tqdm import tqdm
 def main(easitter):
     print("MODE: flattering")
     favoCnt = 0
+    flLimit = 1200
     me = easitter.ME
     users = set()
     users.add(me)
     
     try:
         # get and filter tweets
-        tweets = easitter.getTimeline(limit=5000)
+        tweets = easitter.getTimeline(limit=flLimit)
         filteredTweets, users = easitter.tweetsFiltering(tweets, users=users)
 
         for tweet in filteredTweets:

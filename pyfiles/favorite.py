@@ -7,13 +7,14 @@ from tqdm import tqdm
 
 def main(easitter):
     print("MODE: favorite")
-    tag = "#いいねした人全員フォロー"
+    tag = "#いいねした人全員フォローする"
     favoCnt = 0
+    favoLimit = 1200
     users = set()
     
     try:
         # get and filter tweets
-        tweets = easitter.searchTweets(tag, limit=5000)
+        tweets = easitter.searchTweets(tag, limit=favoLimit)
         filteredTweets, users = easitter.tweetsFiltering(tweets, users=users)
 
         for tweet in filteredTweets:
