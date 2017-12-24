@@ -9,6 +9,7 @@ import datetime as dt
 import os
 from tqdm import tqdm
 import re
+import pickle as pkl
 
 class Easitter(object):
     CK = "warrm7a0cjWy62GbnjQRLUXtd"
@@ -374,8 +375,8 @@ class Easitter(object):
     def savePklFile(self, path, data):
         dirPath = path.split("/")
         if 1 < len(dirPath):
-            dirPath = "/".join(list(dirpPath)[0:-1]) + "/"
-            os.makedirs(dirpPath, exist_ok=True)
+            dirPath = "/".join(list(dirPath)[0:-1]) + "/"
+            os.makedirs(dirPath, exist_ok=True)
 
         with open(path, "wb") as f:
             pkl.dump(data, f)

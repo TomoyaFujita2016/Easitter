@@ -12,22 +12,32 @@ import datetime as dt
 def main(easitter):
     print("MODE: auto reply")
     words = ["あり", "いいね"]
+    path = "./.Data/repIds.pkl"
+    statusIds = easitter.confirmPklFile(path)
     cnt = 0
     try:
         timeline=easitter.getMention(befDays=-1)
         for status in timeline:
-            print("[%3d]Reply: " % cnt)
+            if not easitter.byInclude(words, status.text):
+                continue
             statusId=status.id
-            screenName=status.author.screen_name
-            message = "@"+ str(screenName) +" "+ createMessage()
-            log = easitter.tweet(message, reply=statusId)
-            print(log)
+            if not statusId in statusIds:
+                cnt += 1
+                print("[%d]Reply: " % cnt)
+                screenName=status.author.screen_name
+                message = "@"+ str(screenName) +" "+ createMessage()
+                log = easitter.tweet(message, reply=statusId)
+                print(log)
+                statusIds.append(statusId)
+
     except tweepy.error.TweepError as tp:
         print(tp)
     except Exception as e:
         print(e)
     except KeyboardInterrupt:
         pass
+
+    easitter.savePklFile(path, statusIds)
     print("\nReplyCnt: %4d" % cnt)
 
 def createMessage():
