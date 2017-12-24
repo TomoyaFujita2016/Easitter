@@ -4,6 +4,8 @@
 import tweepy
 import datetime
 from datetime import timedelta
+from datetime import datetime as dtdt
+import datetime as dt
 import os
 from tqdm import tqdm
 import re
@@ -14,7 +16,7 @@ class Easitter(object):
     AT = ""
     AS = ""
 
-    def __init__(self, CK=CK,CS=CS,AT=AT,AS=AS):
+    def __init__(self, CK=CK,CS=CS,AT=AT,AS=AS, byGetF=True):
         self.SAMPLE_NUM = 50
         # if it's 1.0, ex) follow=100 and follower=0
         # if it's 0.5, ex) follow=100 and follower=100
@@ -30,9 +32,12 @@ class Easitter(object):
 
         self.API = tweepy.API(auth, api_root='/1.1', wait_on_rate_limit=True)
         self.ME = self._getMe()
-
-        self.friends = self.getFriendIds(self.ME)
-        self.followers = self.getFollowerIds(self.ME)
+        
+        if byGetF:
+            # self.friends is not used now
+            # self.friends = self.getFriendIds(self.ME)
+            self.friends = []
+            self.followers = self.getFollowerIds(self.ME)
 
     def _getMe(self):
         return self.API.me().id
@@ -359,3 +364,48 @@ class Easitter(object):
             return tmpStrList[0]
         return tmpStrList
     
+    def confirmPklFile(self, path): 
+        if os.path.exists(path): 
+            with open(path, "rb") as f:
+                return pkl.load(f)
+        else:
+            return []
+    
+    def savePklFile(self, path, data):
+        dirPath = path.split("/")
+        if 1 < len(dirPath):
+            dirPath = "/".join(list(dirpPath)[0:-1]) + "/"
+            os.makedirs(dirpPath, exist_ok=True)
+
+        with open(path, "wb") as f:
+            pkl.dump(data, f)
+    def getMention(self, limit=100, befDays=-7):
+        tweets = []
+        date = self.getDate(befDays)
+        replys = self.API.mentions_timeline(count=100)
+        for status in replys:
+            # print("date " + date)
+            # print("created " + str(status.created_at).split(" ")[0])
+            if not date < str(status.created_at).split(" ")[0]:
+                break
+            tweets.append(status)
+        return tweets
+
+    def getDate(self, addDay):
+        # ex) '12-20-31'
+        return str(dtdt.now() + dt.timedelta(days=addDay)).split(" ")[0]
+          
+    def tweet(self, message, reply=None):
+        # reply is reply status id
+        try:
+            if reply is None:
+                self.API.update_status(status=message)
+            else:
+                self.API.update_status(status=message, in_reply_to_status_id=reply)
+            return "Succeeded in tweet: %s" % message
+
+        except tweepy.error.TweepError as e:
+            return "Failed to tweet: %s" % str(e.reason)
+
+
+
