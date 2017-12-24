@@ -283,7 +283,7 @@ class Easitter(object):
                 return 429, "Favo restriction! %d"%tId
             if "139" in tp.reason:
                 return 139, "You have already favorite it! %d"%tId
-            return -1, "Exception! %d"%str(tp.reason)
+            return -1, "Exception! %s"%str(tp.reason)
 
     def follow(self, userId):
         try:
