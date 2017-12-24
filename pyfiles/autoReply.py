@@ -67,4 +67,4 @@ def createMessage():
             
             ]
     num = random.randint(0, len(messages)-1)
-    return message[num]
+    return messages[num]
