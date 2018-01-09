@@ -19,8 +19,8 @@ def readPklFile(path):
         
 
 def tweetSetup():
-    CONSUMER_KEY = 'KINHRDJKDjXxjf0Y9WMPuE09q'
-    CONSUMER_SECRET = 'UwVaMjr6bEOK1WquNDOMCsSmZc2phVangJkvy7TU3zYXjsrKVH'
+    CONSUMER_KEY = 'fLhoQoaXRlR7cucVWlrNfM9ih'
+    CONSUMER_SECRET = '4uaqsQ5aqk5u5j8Se8LFnvvbAoHfZQm1LXqHsjM9GIzuaAaTZQ'
     pklPath = "./AC_PATH/pklData.pkl"
     
     auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
