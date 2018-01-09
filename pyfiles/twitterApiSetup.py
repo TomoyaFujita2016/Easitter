@@ -11,8 +11,8 @@ def decryptCode(code):
     return code.decode('rot_13').decode('base64_codec').decode('utf8')
 
 def getAccessKeys():
-    CK = "KINHRDJKDjXxjf0Y9WMPuE09q"
-    CS = "UwVaMjr6bEOK1WquNDOMCsSmZc2phVangJkvy7TU3zYXjsrKVH"
+    CK = "fLhoQoaXRlR7cucVWlrNfM9ih"
+    CS = "4uaqsQ5aqk5u5j8Se8LFnvvbAoHfZQm1LXqHsjM9GIzuaAaTZQ"
     ACCESS_CODES = [CK, CS]
     auth = tweepy.OAuthHandler(CK, CS)
     
