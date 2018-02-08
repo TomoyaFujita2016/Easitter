@@ -13,7 +13,7 @@ FIRST_PATH = ".byFirst"
 def initialize():
     if byFirstExecution():
         if os.path.exists(ACCESS_PATH):
-            sh.rmtree(ACCESS_PATH)
+            os.remove(ACCESS_PATH)
         if os.path.exists(NUM_PATH):
             os.remove(NUM_PATH)
 
